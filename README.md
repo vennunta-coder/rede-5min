@@ -1,124 +1,51 @@
-# Rede dos 5 Minutos — v3 (perfil com estatísticas)
+# Rede dos 5 Minutos — v4 (perfil com seguir/gostar)
 
-## Arquivos
-- `index.html` — cadastro (email, username, idade, gênero), logo e favicon. Redireciona para `perfil.html?u=username`.
-- `perfil.html` — perfil público com avatar, username e contadores: **A seguir**, **Seguidores**, **Gostos**.
-- `README.md` — SQL das tabelas e exemplos de teste.
+## O que há de novo
+- Botões **Seguir** e **Gostar** no `perfil.html` (modo demo). 
+- Pergunta “quem é você?” (username) e guarda em `localStorage` para registrar ações.
+- Atualização dos contadores **ao vivo** após cada ação.
 
-## SQL — Tabela de usuários
+## Políticas RLS adicionais (para permitir UNFOLLOW/UNLIKE)
+> Se você quiser permitir **remover** seguir/gosto pelo site, adicione estas políticas de **DELETE**:
+
 ```sql
-create table if not exists public.users (
-  id uuid default gen_random_uuid() primary key,
-  email text unique not null,
-  username text unique not null,
-  avatar_url text not null,
-  age int,
-  gender text,
-  created_at timestamptz default now()
-);
-
-alter table public.users enable row level security;
-
-create policy if not exists "allow insert for anyone"
-on public.users
-for insert
-to public
-with check (true);
-
-create policy if not exists "allow select public fields"
-on public.users
-for select
-to public
-using (true);
-```
-
-## SQL — Seguidores
-```sql
-create table if not exists public.follows (
-  id uuid default gen_random_uuid() primary key,
-  follower uuid references public.users(id) on delete cascade,
-  following uuid references public.users(id) on delete cascade,
-  created_at timestamptz default now(),
-  unique(follower, following)
-);
-
-alter table public.follows enable row level security;
-
-create policy if not exists "anyone can insert follows"
+-- FOLLOWS: permitir delete a qualquer um (ambiente demo)
+create policy if not exists "anyone can delete follows"
 on public.follows
-for insert
+for delete
 to public
-with check (true);
+using (true);
 
-create policy if not exists "anyone can select follows"
-on public.follows
-for select
+-- LIKES: permitir delete a qualquer um (ambiente demo)
+create policy if not exists "anyone can delete likes"
+on public.likes
+for delete
 to public
 using (true);
 ```
 
-## SQL — Gostos (likes)
-```sql
-create table if not exists public.likes (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references public.users(id) on delete cascade,
-  target_user uuid references public.users(id) on delete cascade,
-  created_at timestamptz default now(),
-  unique(user_id, target_user)
-);
+> ⚠️ Em produção, você deve restringir para que apenas o próprio autor possa deletar:
+> 
+> ```sql
+> -- Exemplo mais seguro (precisa autenticação de usuário real via Supabase Auth)
+> create policy "owner can delete own follow"
+> on public.follows for delete to authenticated
+> using (auth.uid() = follower);
+> 
+> create policy "owner can delete own like"
+> on public.likes for delete to authenticated
+> using (auth.uid() = user_id);
+> ```
 
-alter table public.likes enable row level security;
+## Outras tabelas (caso não tenha criado ainda)
+Veja o README da v3 para `users`, `follows` e `likes` com políticas de insert/select.
 
-create policy if not exists "anyone can insert likes"
-on public.likes
-for insert
-to public
-with check (true);
+## Como usar
+1. Suba `index.html` e `perfil.html` na raiz do repositório (GitHub Pages).
+2. Abra `index.html`, crie alguns usuários.
+3. Vá em `perfil.html?u=alguem` e teste os botões. 
+   - Na primeira ação, informe seu username (quem está fazendo a ação).
+   - Os contadores serão atualizados logo após.
 
-create policy if not exists "anyone can select likes"
-on public.likes
-for select
-to public
-using (true);
-```
-
-## Testes rápidos
-### Pegar id de um usuário pelo username
-```sql
-select id from users where username = 'alice';
-```
-
-### Criar relação de seguir (alice segue bob)
-```sql
-insert into follows (follower, following)
-values (
-  (select id from users where username = 'alice'),
-  (select id from users where username = 'bob')
-);
-```
-
-### Dar “gosto” (alice curte o perfil de bob)
-```sql
-insert into likes (user_id, target_user)
-values (
-  (select id from users where username = 'alice'),
-  (select id from users where username = 'bob')
-);
-```
-
-### Contar seguidores/seguindo/likes do bob
-```sql
--- seguidores do bob
-select count(*) from follows where following = (select id from users where username = 'bob');
-
--- quem bob segue
-select count(*) from follows where follower = (select id from users where username = 'bob');
-
--- likes recebidos pelo bob
-select count(*) from likes where target_user = (select id from users where username = 'bob');
-```
-
-## Deploy
-- Suba os 2 HTMLs na raiz do repositório GitHub.
-- Ative GitHub Pages: Settings → Pages → Deploy from a branch (main, root).
-- Abra `index.html`, cadastre-se e será redirecionado para `perfil.html?u=seuusername`.
+## Observação
+Este é um modo **demo** sem autenticação real. Para produção, implemente login (Supabase Auth) e substitua o prompt por `session.user`.
