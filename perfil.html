@@ -8,26 +8,53 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-neutral-950 text-neutral-50">
+
+  <!-- Header com logo -->
+  <header class="sticky top-0 bg-neutral-950/80 backdrop-blur border-b border-neutral-800">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
+      <svg width="28" height="28" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+        <rect x="10" y="10" width="108" height="108" rx="28" fill="#f59e0b"/>
+        <path d="M64 64 V40" stroke="#0a0a0a" stroke-width="10" stroke-linecap="round"/>
+        <path d="M64 64 L88 74" stroke="#0a0a0a" stroke-width="10" stroke-linecap="round"/>
+        <circle cx="64" cy="64" r="6" fill="#0a0a0a"/>
+      </svg>
+      <span class="font-semibold">Rede dos 5 Minutos</span>
+    </div>
+  </header>
+
+  <!-- Card do perfil -->
   <main class="min-h-screen flex items-center justify-center p-6">
     <div id="card" class="w-full max-w-sm p-8 rounded-2xl border border-neutral-800 bg-neutral-900 text-center">
       <div id="loading" class="text-neutral-400">Carregando…</div>
+
       <div id="content" class="hidden">
         <img id="avatar" class="w-28 h-28 mx-auto rounded-full border border-neutral-700" src="" alt="avatar"/>
         <h1 id="username" class="text-2xl font-bold mt-4"></h1>
         <p class="text-neutral-400 mt-2">Perfil público</p>
+
+        <!-- ✅ Estatísticas -->
+        <div id="stats" class="mt-6 flex justify-around text-neutral-300">
+          <div><span id="followingCount" class="font-bold">0</span><br><span class="text-sm">A seguir</span></div>
+          <div><span id="followersCount" class="font-bold">0</span><br><span class="text-sm">Seguidores</span></div>
+          <div><span id="likesCount" class="font-bold">0</span><br><span class="text-sm">Gostos</span></div>
+        </div>
       </div>
+
       <div id="notfound" class="hidden text-red-400">Usuário não encontrado.</div>
     </div>
   </main>
+
   <script>
     const supabase = window.supabase.createClient(
       "https://drlnhorkxczaosgpyfnt.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRybG5ob3JreGN6YW9zZ3B5Zm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyNDc5MjQsImV4cCI6MjA3MTgyMzkyNH0.EE4wbR53ZIZREQQcUwcZ_P8Fey46F-vZNGB2jr7n_UM"
     );
+
     function qs(name) {
       const p = new URLSearchParams(window.location.search);
       return p.get(name);
     }
+
     (async function load() {
       const u = (qs("u") || "").toLowerCase();
       const loading = document.getElementById("loading");
@@ -35,25 +62,51 @@
       const notfound = document.getElementById("notfound");
       const avatar = document.getElementById("avatar");
       const username = document.getElementById("username");
+
       if (!u) {
         loading.classList.add("hidden");
         notfound.textContent = "Faltou informar ?u=nomedeusuario";
         notfound.classList.remove("hidden");
         return;
       }
+
+      // buscar dados do usuário
       const { data, error } = await supabase
         .from("users")
-        .select("username, avatar_url")
+        .select("id, username, avatar_url")
         .eq("username", u)
         .maybeSingle();
+
       loading.classList.add("hidden");
+
       if (error || !data) {
         notfound.classList.remove("hidden");
         return;
       }
+
       avatar.src = data.avatar_url;
       username.textContent = data.username;
       content.classList.remove("hidden");
+
+      // ✅ buscar estatísticas
+      const { data: followers } = await supabase
+        .from("follows")
+        .select("id")
+        .eq("following", data.id);
+
+      const { data: following } = await supabase
+        .from("follows")
+        .select("id")
+        .eq("follower", data.id);
+
+      const { data: likes } = await supabase
+        .from("likes")
+        .select("id")
+        .eq("target_user", data.id);
+
+      document.getElementById("followersCount").textContent = followers?.length || 0;
+      document.getElementById("followingCount").textContent = following?.length || 0;
+      document.getElementById("likesCount").textContent = likes?.length || 0;
     })();
   </script>
 </body>
