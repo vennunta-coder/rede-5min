@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rede dos 5 Minutos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-neutral-950 text-neutral-50">
+
+  <!-- 🔑 Formulário de cadastro -->
+  <section id="signupArea" class="min-h-screen flex flex-col items-center justify-center text-center p-6">
+    <h1 class="text-4xl font-bold mb-6">Cadastro na Rede dos 5 Minutos</h1>
+    <form id="form" class="space-y-4 max-w-md w-full text-left">
+      <input type="email" id="email" required placeholder="E-mail"
+        class="w-full rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-neutral-100" />
+      <input type="text" id="username" required placeholder="Nome de usuário"
+        class="w-full rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-neutral-100" />
+      <input type="number" id="age" placeholder="Idade (privado)"
+        class="w-full rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-neutral-100" />
+      <select id="gender"
+        class="w-full rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-neutral-100">
+        <option value="">Selecione seu gênero (privado)</option>
+        <option value="masculino">Masculino</option>
+        <option value="feminino">Feminino</option>
+        <option value="nao-binario">Não-binário</option>
+        <option value="outro">Outro</option>
+        <option value="prefiro-nao-dizer">Prefiro não dizer</option>
+      </select>
+      <button type="submit"
+        class="w-full bg-orange-500 px-5 py-3 rounded-xl font-semibold text-neutral-950 hover:bg-orange-400 transition">
+        Entrar
+      </button>
+    </form>
+    <p id="feedback" class="mt-3 text-green-400 hidden"></p>
+    <p id="errorMsg" class="mt-3 text-red-400 hidden"></p>
+  </section>
+
+  <!-- 🔒 Conteúdo protegido -->
+  <section id="protectedArea" class="hidden text-center">
+    <!-- Header -->
+    <header class="sticky top-0 bg-neutral-950/80 backdrop-blur border-b border-neutral-800">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <img id="profileAvatar" src="" class="w-10 h-10 rounded-full border border-neutral-700" alt="avatar"/>
+          <span id="profileName" class="font-bold"></span>
+        </div>
+        <button id="logoutBtn"
+          class="bg-neutral-800 text-neutral-50 px-4 py-2 rounded-xl hover:bg-neutral-700 transition">
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="max-w-6xl mx-auto px-4 py-20">
+      <h1 class="text-4xl md:text-6xl font-black mb-6">
+        Bem-vindo, <span id="welcomeName" class="text-orange-500"></span>! 🎉
+      </h1>
+      <p class="text-neutral-300 text-lg">
+        Você agora faz parte da Rede dos 5 Minutos.
+      </p>
+    </section>
+
+    <!-- Sobre -->
+    <section class="max-w-6xl mx-auto px-4 py-16 text-center">
+      <h2 class="text-3xl font-bold mb-4">Sobre a Rede</h2>
+      <p class="max-w-3xl mx-auto text-neutral-300">
+        Aqui, cada pessoa tem apenas cinco minutos por dia para se expressar
+        e interagir. É uma pausa consciente em meio ao excesso de informação.
+      </p>
+    </section>
+
+    <!-- Como funciona -->
+    <section class="bg-neutral-900 py-16">
+      <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-10 text-center">
+        <div class="p-6 rounded-2xl border border-neutral-800 bg-neutral-950">
+          <h3 class="text-xl font-semibold mb-2">1. Acesse</h3>
+          <p class="text-neutral-400">Uma vez por dia, entre na rede.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-neutral-800 bg-neutral-950">
+          <h3 class="text-xl font-semibold mb-2">2. Compartilhe</h3>
+          <p class="text-neutral-400">Poste seus pensamentos ou fotos em até 5 minutos.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-neutral-800 bg-neutral-950">
+          <h3 class="text-xl font-semibold mb-2">3. Conecte</h3>
+          <p class="text-neutral-400">Interaja de forma rápida, sem perder tempo.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Inclusão -->
+    <section class="max-w-6xl mx-auto px-4 py-16 text-center">
+      <h2 class="text-3xl font-bold mb-4">Uma rede para todos</h2>
+      <p class="max-w-3xl mx-auto text-neutral-300">
+        A Rede dos 5 Minutos é inclusiva e diversa.
+        Não importa seu gênero, identidade ou origem — todos são bem-vindos.
+      </p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="max-w-6xl mx-auto px-4 py-10 text-center text-neutral-500 text-sm">
+      <p>© 2025 Rede dos 5 Minutos. Todos os direitos reservados.</p>
+    </footer>
+  </section>
+
+  <script>
+    const supabase = window.supabase.createClient(
+      "https://drlnhorkxczaosgpyfnt.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRybG5ob3JreGN6YW9zZ3B5Zm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyNDc5MjQsImV4cCI6MjA3MTgyMzkyNH0.EE4wbR53ZIZREQQcUwcZ_P8Fey46F-vZNGB2jr7n_UM"
+    );
+
+    const form = document.getElementById("form");
+    const feedback = document.getElementById("feedback");
+    const errorMsg = document.getElementById("errorMsg");
+    const signupArea = document.getElementById("signupArea");
+    const protectedArea = document.getElementById("protectedArea");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const profileAvatar = document.getElementById("profileAvatar");
+    const profileName = document.getElementById("profileName");
+    const welcomeName = document.getElementById("welcomeName");
+
+    function generateAvatar(username) {
+      return \`https://api.dicebear.com/7.x/identicon/svg?seed=\${encodeURIComponent(username)}\`;
+    }
+
+    function sanitizeUsername(raw) {
+      const v = (raw || "").trim().toLowerCase().replace(/[^a-z0-9_-]/g, "");
+      if (v.length < 3 || v.length > 24) return null;
+      return v;
+    }
+
+    function normalizeAge(raw) {
+      if (!raw) return null;
+      const n = parseInt(raw, 10);
+      if (Number.isNaN(n)) return null;
+      if (n < 13) return 13;
+      if (n > 120) return 120;
+      return n;
+    }
+
+    async function emailExists(email) {
+      const { data, error } = await supabase.from("users").select("id").eq("email", email).maybeSingle();
+      if (error) console.error(error);
+      return !!data;
+    }
+
+    async function usernameExists(username) {
+      const { data, error } = await supabase.from("users").select("id").eq("username", username).maybeSingle();
+      if (error) console.error(error);
+      return !!data;
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorMsg.classList.add("hidden");
+      feedback.classList.add("hidden");
+
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const rawUsername = document.getElementById("username").value;
+      const ageRaw = document.getElementById("age").value;
+      const gender = document.getElementById("gender").value || null;
+
+      if (!email) {
+        errorMsg.textContent = "Informe um email válido.";
+        errorMsg.classList.remove("hidden");
+        return;
+      }
+
+      const username = sanitizeUsername(rawUsername);
+      if (!username) {
+        errorMsg.textContent = "Nome de usuário inválido (3–24, apenas letras/números/_/-).";
+        errorMsg.classList.remove("hidden");
+        return;
+      }
+
+      if (await emailExists(email)) {
+        errorMsg.textContent = "⚠️ Este email já está cadastrado.";
+        errorMsg.classList.remove("hidden");
+        return;
+      }
+      if (await usernameExists(username)) {
+        errorMsg.textContent = "⚠️ Este nome de usuário já está em uso.";
+        errorMsg.classList.remove("hidden");
+        return;
+      }
+
+      const age = normalizeAge(ageRaw);
+      const avatar_url = generateAvatar(username);
+
+      const { error } = await supabase.from("users").insert([{ email, username, avatar_url, age, gender }]);
+
+      if (error) {
+        if ((error.code && error.code === "23505") || /duplicate key/i.test(error.message)) {
+          errorMsg.textContent = "⚠️ Email ou nome de usuário já cadastrado.";
+        } else {
+          errorMsg.textContent = "Erro ao registrar. Tente novamente.";
+          console.error(error);
+        }
+        errorMsg.classList.remove("hidden");
+        return;
+      }
+
+      feedback.textContent = "✅ Registro realizado com sucesso!";
+      feedback.classList.remove("hidden");
+      signupArea.classList.add("hidden");
+      protectedArea.classList.remove("hidden");
+
+      profileAvatar.src = avatar_url;
+      profileName.textContent = username;
+      welcomeName.textContent = username;
+    });
+
+    logoutBtn?.addEventListener("click", () => {
+      signupArea.classList.remove("hidden");
+      protectedArea.classList.add("hidden");
+    });
+  </script>
+</body>
+</html>
