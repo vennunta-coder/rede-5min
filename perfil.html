@@ -4,6 +4,10 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Perfil • Rede dos 5 Minutos</title>
+  <link
+  rel="icon"
+  href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="14" fill="%23f59e0b"/><path d="M32 32 V18" stroke="%230a0a0a" stroke-width="6" stroke-linecap="round"/><path d="M32 32 L44 38" stroke="%230a0a0a" stroke-width="6" stroke-linecap="round"/><circle cx="32" cy="32" r="4" fill="%230a0a0a"/></svg>'
+/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -38,6 +42,14 @@
           <div><span id="followersCount" class="font-bold">0</span><br><span class="text-sm">Seguidores</span></div>
           <div><span id="likesCount" class="font-bold">0</span><br><span class="text-sm">Gostos</span></div>
         </div>
+
+        <!-- ✅ Ações demo -->
+        <div class="mt-8 flex justify-center gap-3">
+          <button id="followBtn" class="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700">Seguir</button>
+          <button id="likeBtn" class="px-4 py-2 rounded-xl bg-orange-500 text-neutral-950 hover:bg-orange-400">Gostar</button>
+        </div>
+        <p id="actionMsg" class="mt-3 text-sm text-green-400 hidden"></p>
+        <p id="actionErr" class="mt-2 text-sm text-red-400 hidden"></p>
       </div>
 
       <div id="notfound" class="hidden text-red-400">Usuário não encontrado.</div>
@@ -50,63 +62,95 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRybG5ob3JreGN6YW9zZ3B5Zm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyNDc5MjQsImV4cCI6MjA3MTgyMzkyNH0.EE4wbR53ZIZREQQcUwcZ_P8Fey46F-vZNGB2jr7n_UM"
     );
 
-    function qs(name) {
-      const p = new URLSearchParams(window.location.search);
-      return p.get(name);
+    function qs(name) { const p = new URLSearchParams(window.location.search); return p.get(name); }
+    function saveViewer(u){ try{ localStorage.setItem("viewer_username", u); }catch(e){} }
+    function loadViewer(){ try{ return localStorage.getItem("viewer_username") || ""; }catch(e){ return ""; } }
+    function showMsg(t){ const m=document.getElementById("actionMsg"); m.textContent=t; m.classList.remove("hidden"); setTimeout(()=>m.classList.add("hidden"),2000); }
+    function showErr(t){ const m=document.getElementById("actionErr"); m.textContent=t; m.classList.remove("hidden"); setTimeout(()=>m.classList.add("hidden"),3000); }
+
+    async function getUserByUsername(username){
+      const res = await supabase.from("users").select("id, username").eq("username", username.toLowerCase()).maybeSingle();
+      return res.data || null;
     }
 
-    (async function load() {
+    async function refreshCounts(targetId){
+      const followersRes = await supabase.from("follows").select("id").eq("following", targetId);
+      const followingRes = await supabase.from("follows").select("id").eq("follower", targetId);
+      const likesRes = await supabase.from("likes").select("id").eq("target_user", targetId);
+      document.getElementById("followersCount").textContent = (followersRes.data || []).length;
+      document.getElementById("followingCount").textContent = (followingRes.data || []).length;
+      document.getElementById("likesCount").textContent = (likesRes.data || []).length;
+    }
+
+    async function ensureViewer(){
+      let v = loadViewer();
+      if(!v){
+        v = prompt("Qual é o seu nome de usuário para registrar a ação?");
+        if(!v){ return null; }
+        saveViewer(v);
+      }
+      const u = await getUserByUsername(v);
+      if(!u){ showErr("Usuário do visualizador não encontrado."); return null; }
+      return u;
+    }
+
+    (async function init() {
       const u = (qs("u") || "").toLowerCase();
       const loading = document.getElementById("loading");
       const content = document.getElementById("content");
       const notfound = document.getElementById("notfound");
       const avatar = document.getElementById("avatar");
       const username = document.getElementById("username");
+      const followBtn = document.getElementById("followBtn");
+      const likeBtn = document.getElementById("likeBtn");
 
-      if (!u) {
-        loading.classList.add("hidden");
-        notfound.textContent = "Faltou informar ?u=nomedeusuario";
-        notfound.classList.remove("hidden");
-        return;
-      }
+      if (!u) { loading.classList.add("hidden"); notfound.textContent = "Faltou informar ?u=nomedeusuario"; notfound.classList.remove("hidden"); return; }
 
-      // buscar dados do usuário
-      const { data, error } = await supabase
-        .from("users")
-        .select("id, username, avatar_url")
-        .eq("username", u)
-        .maybeSingle();
-
+      const res = await supabase.from("users").select("id, username, avatar_url").eq("username", u).maybeSingle();
       loading.classList.add("hidden");
-
-      if (error || !data) {
-        notfound.classList.remove("hidden");
-        return;
-      }
-
-      avatar.src = data.avatar_url;
-      username.textContent = data.username;
+      if (res.error || !res.data) { notfound.classList.remove("hidden"); return; }
+      const target = res.data;
+      avatar.src = target.avatar_url;
+      username.textContent = target.username;
       content.classList.remove("hidden");
 
-      // ✅ buscar estatísticas
-      const { data: followers } = await supabase
-        .from("follows")
-        .select("id")
-        .eq("following", data.id);
+      await refreshCounts(target.id);
 
-      const { data: following } = await supabase
-        .from("follows")
-        .select("id")
-        .eq("follower", data.id);
+      followBtn.addEventListener("click", async () => {
+        followBtn.disabled = true; likeBtn.disabled = true;
+        const viewer = await ensureViewer();
+        if(!viewer){ followBtn.disabled = false; likeBtn.disabled = false; return; }
+        if(viewer.id === target.id){ showErr("Você não pode seguir a si mesmo."); followBtn.disabled=false; likeBtn.disabled=false; return; }
+        // tenta seguir; se já segue, deixa de seguir
+        const existing = await supabase.from("follows").select("id").eq("follower", viewer.id).eq("following", target.id).maybeSingle();
+        if(existing.data){
+          const del = await supabase.from("follows").delete().eq("id", existing.data.id);
+          if(del.error){ showErr("Erro ao deixar de seguir."); } else { showMsg("Deixou de seguir."); }
+        } else {
+          const ins = await supabase.from("follows").insert([{ follower: viewer.id, following: target.id }]);
+          if(ins.error){ showErr("Erro ao seguir."); } else { showMsg("Agora você segue este perfil."); }
+        }
+        await refreshCounts(target.id);
+        followBtn.disabled = false; likeBtn.disabled = false;
+      });
 
-      const { data: likes } = await supabase
-        .from("likes")
-        .select("id")
-        .eq("target_user", data.id);
-
-      document.getElementById("followersCount").textContent = followers?.length || 0;
-      document.getElementById("followingCount").textContent = following?.length || 0;
-      document.getElementById("likesCount").textContent = likes?.length || 0;
+      likeBtn.addEventListener("click", async () => {
+        followBtn.disabled = true; likeBtn.disabled = true;
+        const viewer = await ensureViewer();
+        if(!viewer){ followBtn.disabled = false; likeBtn.disabled = false; return; }
+        if(viewer.id === target.id){ showErr("Você não pode gostar do próprio perfil."); followBtn.disabled=false; likeBtn.disabled=false; return; }
+        // tenta like; se já existe, remove
+        const existing = await supabase.from("likes").select("id").eq("user_id", viewer.id).eq("target_user", target.id).maybeSingle();
+        if(existing.data){
+          const del = await supabase.from("likes").delete().eq("id", existing.data.id);
+          if(del.error){ showErr("Erro ao remover gosto."); } else { showMsg("Gosto removido."); }
+        } else {
+          const ins = await supabase.from("likes").insert([{ user_id: viewer.id, target_user: target.id }]);
+          if(ins.error){ showErr("Erro ao registrar gosto."); } else { showMsg("Gostou deste perfil."); }
+        }
+        await refreshCounts(target.id);
+        followBtn.disabled = false; likeBtn.disabled = false;
+      });
     })();
   </script>
 </body>
