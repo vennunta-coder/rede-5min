@@ -19,18 +19,15 @@
       <div id="notfound" class="hidden text-red-400">Usuário não encontrado.</div>
     </div>
   </main>
-
   <script>
     const supabase = window.supabase.createClient(
       "https://drlnhorkxczaosgpyfnt.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRybG5ob3JreGN6YW9zZ3B5Zm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyNDc5MjQsImV4cCI6MjA3MTgyMzkyNH0.EE4wbR53ZIZREQQcUwcZ_P8Fey46F-vZNGB2jr7n_UM"
     );
-
     function qs(name) {
       const p = new URLSearchParams(window.location.search);
       return p.get(name);
     }
-
     (async function load() {
       const u = (qs("u") || "").toLowerCase();
       const loading = document.getElementById("loading");
@@ -38,27 +35,22 @@
       const notfound = document.getElementById("notfound");
       const avatar = document.getElementById("avatar");
       const username = document.getElementById("username");
-
       if (!u) {
         loading.classList.add("hidden");
         notfound.textContent = "Faltou informar ?u=nomedeusuario";
         notfound.classList.remove("hidden");
         return;
       }
-
       const { data, error } = await supabase
         .from("users")
         .select("username, avatar_url")
         .eq("username", u)
         .maybeSingle();
-
       loading.classList.add("hidden");
-
       if (error || !data) {
         notfound.classList.remove("hidden");
         return;
       }
-
       avatar.src = data.avatar_url;
       username.textContent = data.username;
       content.classList.remove("hidden");
