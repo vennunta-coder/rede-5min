@@ -12,8 +12,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-neutral-950 text-neutral-50">
-
-  <!-- Logo / Marca -->
   <section id="signupArea" class="min-h-screen flex flex-col items-center justify-center text-center p-6">
     <div class="mb-6 flex items-center gap-3">
       <svg width="36" height="36" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
@@ -47,7 +45,6 @@
         Entrar
       </button>
     </form>
-    <p id="feedback" class="mt-3 text-green-400 hidden"></p>
     <p id="errorMsg" class="mt-3 text-red-400 hidden"></p>
   </section>
 
@@ -56,9 +53,7 @@
       "https://drlnhorkxczaosgpyfnt.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRybG5ob3JreGN6YW9zZ3B5Zm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyNDc5MjQsImV4cCI6MjA3MTgyMzkyNH0.EE4wbR53ZIZREQQcUwcZ_P8Fey46F-vZNGB2jr7n_UM"
     );
-
     const form = document.getElementById("form");
-    const feedback = document.getElementById("feedback");
     const errorMsg = document.getElementById("errorMsg");
 
     function generateAvatar(username) { return `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(username)}`; }
@@ -68,7 +63,7 @@
     async function usernameExists(username){ const res = await supabase.from("users").select("id").eq("username", username).maybeSingle(); return !!res.data; }
 
     form.addEventListener("submit", async (e) => {
-      e.preventDefault(); errorMsg.classList.add("hidden"); feedback.classList.add("hidden");
+      e.preventDefault(); errorMsg.classList.add("hidden");
 
       const email = document.getElementById("email").value.trim().toLowerCase();
       const rawUsername = document.getElementById("username").value;
@@ -78,7 +73,6 @@
       if (!email) { errorMsg.textContent = "Informe um email válido."; errorMsg.classList.remove("hidden"); return; }
       const username = sanitizeUsername(rawUsername);
       if (!username) { errorMsg.textContent = "Nome de usuário inválido (3–24, apenas letras/números/_/-)."; errorMsg.classList.remove("hidden"); return; }
-
       if (await emailExists(email)) { errorMsg.textContent = "⚠️ Este email já está cadastrado."; errorMsg.classList.remove("hidden"); return; }
       if (await usernameExists(username)) { errorMsg.textContent = "⚠️ Este nome de usuário já está em uso."; errorMsg.classList.remove("hidden"); return; }
 
