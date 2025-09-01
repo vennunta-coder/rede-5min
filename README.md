@@ -1,46 +1,27 @@
-# Rede dos 5 Minutos — v10 (Notificações seguras)
+# 🚀 Rede dos 5 Minutos (rede-5min)
 
-## Novidades
-- 🔔 Ícone de notificações no header.
-- Exibe últimas interações: seguir, curtir, comentar.
-- Mostra badge com número de notificações não vistas.
-- Somente o dono do perfil pode ver suas notificações.
+[![HTML5](https://img.shields.io/badge/HTML-5-orange)]()
+[![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-blue)]()
+[![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-brightgreen)]()
 
-## SQL — criar tabela de notificações (seguro)
-```sql
-create table if not exists public.notifications (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references public.users(id) on delete cascade,
-  actor_id uuid references public.users(id) on delete cascade,
-  type text not null,
-  post_id uuid references public.posts(id),
-  content text,
-  created_at timestamptz default now(),
-  seen boolean default false
-);
+Rede social minimalista onde cada usuário tem **5 minutos por dia** para postar e interagir.
+Front-end estático: **HTML + TailwindCDN + LocalStorage**, pronto para GitHub Pages.
 
-alter table public.notifications enable row level security;
+## 📦 Estrutura
+- `index.html` → Landing (Cadastro, Sobre, Como funciona, FAQ)
+- `feed.html` → Stories + posts
+- `videos.html` → **TikTok-like** (autoplay, likes, comentários)
+- `perfil.html`, `amigos.html`, `mensagens.html`, `notificacoes.html`, `config.html`
+- `script.js`, `logo.svg`, `favicon.ico`, `.nojekyll`
 
-create policy if not exists "owner can view notifications"
-on public.notifications
-for select
-to public
-using (auth.uid() = user_id);
+## ▶️ Como rodar localmente
+Abra `index.html` no navegador. Faça o cadastro → você será redirecionado para o feed.
 
-create policy if not exists "anyone can insert notifications"
-on public.notifications
-for insert
-to public
-with check (true);
+## 🌐 Deploy no GitHub Pages
+1. Crie o repositório `rede-5min`
+2. Suba todos os arquivos da pasta
+3. **Settings → Pages → Source: `main` / root**
+4. Acesse: `https://SEU-USUARIO.github.io/rede-5min/`
 
-create policy if not exists "owner can update notifications"
-on public.notifications
-for update
-to public
-using (auth.uid() = user_id);
-```
-
-## Deploy
-1. Rode o SQL acima no Supabase.
-2. Suba `index.html` e `perfil.html` no GitHub Pages.
-3. Acesse seu perfil → clique no 🔔 → veja notificações.
+---
+© 2025 Rede dos 5 Minutos — Todos os direitos reservados.

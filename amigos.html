@@ -1,3 +1,58 @@
-<!DOCTYPE html><html lang='pt-BR'><head><title>R5M • Amigos</title><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1'><link rel='icon' href='favicon.ico'><script src="https://cdn.tailwindcss.com"></script></head><body class='bg-neutral-950 text-neutral-50'><header class='sticky top-0 bg-neutral-950/80 backdrop-blur border-b border-neutral-800'><div class='max-w-6xl mx-auto px-4 py-4 flex justify-between items-center'><div class='flex items-center gap-2'><img src='logo.svg' alt='R5M' class='h-7 rounded-md ring-1 ring-orange-500/40'/><span class='font-bold text-lg'>Rede dos 5 Minutos</span></div><nav class='hidden md:flex gap-4 text-sm text-neutral-300'><a href='feed.html' class='hover:text-orange-400'>Feed</a><a href='videos.html' class='hover:text-orange-400'>Vídeos</a><a href='perfil.html' class='hover:text-orange-400'>Perfil</a><a href='amigos.html' class='hover:text-orange-400'>Amigos</a><a href='mensagens.html' class='hover:text-orange-400'>Mensagens</a><a href='notificacoes.html' class='hover:text-orange-400'>Notificações</a><a href='config.html' class='hover:text-orange-400'>Configurações</a></nav></div></header><main class='max-w-3xl mx-auto px-4 py-10 space-y-8'><section class='p-6 rounded-2xl border border-neutral-800 bg-neutral-900'><h2 class='text-xl font-semibold mb-4 text-orange-500'>Amigos</h2><p class='text-neutral-400'>Lista de amigos (exemplo).</p></section></main><footer class='border-t border-neutral-800 py-10 text-center text-sm text-neutral-400'><div class='flex justify-center gap-8 mb-4'><span class='inline-block text-orange-500'><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' class='w-6 h-6'><path stroke-linecap='round' stroke-linejoin='round' d='M12 3l8 4v5c0 5.25-3.5 10-8 11-4.5-1-8-5.75-8-11V7l8-4z'/></svg></span>
-<span class='inline-block text-orange-500'><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' class='w-6 h-6'><circle cx='12' cy='12' r='9'/><circle cx='12' cy='12' r='3'/><path stroke-linecap='round' stroke-linejoin='round' d='M12 3v3m0 12v3m9-9h-3M6 12H3'/></svg></span>
-<span class='inline-block text-orange-500'><svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' class='w-6 h-6'><path stroke-linecap='round' stroke-linejoin='round' d='M12 2a9 9 0 00-9 9v3c0 4 4 8 9 8s9-4 9-8v-3a9 9 0 00-9-9z'/><path stroke-linecap='round' stroke-linejoin='round' d='M9 14h.01M15 14h.01M9 18c1.5 1 4.5 1 6 0'/></svg></span></div><p class='font-mono'>© 2025 <span class='text-orange-500 font-semibold'>Rede dos 5 Minutos</span> — Todos os direitos reservados.</p></footer><script src='script.js'></script></body></html>
+<!DOCTYPE html><html lang="pt-BR"><head><title>R5M • Amigos</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script src="https://cdn.tailwindcss.com"></script><link rel="icon" href="favicon.ico"></head>
+<body class="bg-neutral-950 text-neutral-50">
+<header class="sticky top-0 bg-neutral-950/80 backdrop-blur border-b border-neutral-800 z-50">
+  <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-2">
+      <img src="logo.svg" alt="R5M" class="h-7 rounded-md ring-1 ring-orange-500/40"/>
+      <span class="font-bold text-lg">Rede dos 5 Minutos</span>
+    </div>
+    <button id="menuBtn" class="md:hidden text-orange-500 text-2xl leading-none">☰</button>
+    <nav id="menuNav" class="hidden md:flex gap-4 text-sm text-neutral-300">
+      <a class="hover:text-orange-400" href="feed.html">Feed</a>
+      <a class="hover:text-orange-400" href="videos.html">Vídeos</a>
+      <a class="hover:text-orange-400" href="perfil.html">Perfil</a>
+      <a class="hover:text-orange-400" href="amigos.html">Amigos</a>
+      <a class="hover:text-orange-400" href="mensagens.html">Mensagens</a>
+      <a class="hover:text-orange-400" href="notificacoes.html">Notificações</a>
+      <a class="hover:text-orange-400" href="config.html">Configurações</a>
+    </nav>
+  </div>
+  <div id="menuMobile" class="md:hidden hidden border-t border-neutral-800 bg-neutral-950">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-2 text-neutral-300">
+      <a class="hover:text-orange-400" href="feed.html">Feed</a>
+      <a class="hover:text-orange-400" href="videos.html">Vídeos</a>
+      <a class="hover:text-orange-400" href="perfil.html">Perfil</a>
+      <a class="hover:text-orange-400" href="amigos.html">Amigos</a>
+      <a class="hover:text-orange-400" href="mensagens.html">Mensagens</a>
+      <a class="hover:text-orange-400" href="notificacoes.html">Notificações</a>
+      <a class="hover:text-orange-400" href="config.html">Configurações</a>
+    </div>
+  </div>
+</header>
+<main class="max-w-3xl mx-auto px-4 py-10 space-y-8">
+<section class="p-6 rounded-2xl border border-neutral-800 bg-neutral-900">
+  <h2 class="text-xl font-semibold mb-4 text-orange-500">Amigos</h2>
+  <ul class="space-y-3">
+    <li class="flex justify-between items-center p-4 rounded-xl border border-neutral-800 bg-neutral-950"><strong>Ana</strong><span class="text-xs px-2 py-1 rounded-full border border-green-700 text-green-400">online</span></li>
+    <li class="flex justify-between items-center p-4 rounded-xl border border-neutral-800 bg-neutral-950"><strong>João</strong><span class="text-xs px-2 py-1 rounded-full border border-red-800 text-red-400">offline</span></li>
+    <li class="flex justify-between items-center p-4 rounded-xl border border-neutral-800 bg-neutral-950"><strong>Maria</strong><span class="text-xs px-2 py-1 rounded-full border border-green-700 text-green-400">online</span></li>
+  </ul>
+</section>
+</main>
+<footer class="border-t border-neutral-800 py-10 text-center text-sm text-neutral-400">
+  <div class="flex justify-center gap-8 mb-4">
+<span class="inline-block text-orange-500 hover:drop-shadow-[0_0_8px_#f97316]">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+<path stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4v5c0 5.25-3.5 10-8 11-4.5-1-8-5.75-8-11V7l8-4z"/></svg></span>
+<span class="inline-block text-orange-500 hover:drop-shadow-[0_0_8px_#f97316]">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>
+<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v3m0 12v3m9-9h-3M6 12H3"/></svg></span>
+<span class="inline-block text-orange-500 hover:drop-shadow-[0_0_8px_#f97316]">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+<path stroke-linecap="round" stroke-linejoin="round" d="M12 2a9 9 0 00-9 9v3c0 4 4 8 9 8s9-4 9-8v-3a9 9 0 00-9-9z"/>
+<path stroke-linecap="round" stroke-linejoin="round" d="M9 14h.01M15 14h.01M9 18c1.5 1 4.5 1 6 0"/></svg></span>
+</div>
+  <p class="font-mono">© 2025 <span class="text-orange-500 font-semibold">Rede dos 5 Minutos</span> — Todos os direitos reservados.</p>
+</footer>
+<script src="script.js"></script></body></html>
