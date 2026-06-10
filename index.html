@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mentirógrafo™ v5</title>
+<title>Mentirógrafo™ v6 PWA</title>
+<meta name="theme-color" content="#4b0b75">
+<link rel="manifest" href="manifest.json">
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#4b0b75,#08020d 75%);color:white;min-height:100vh}
@@ -74,6 +76,7 @@ footer{text-align:center;padding:30px;color:#aaa;font-size:13px}
 
   <button onclick="startNormalGame()">🎡 Duelo Normal</button>
   <button onclick="startArena()">🌍 Arena Global</button>
+  <button id="installBtn" class="hidden" onclick="installApp()">📲 Instalar Mentirógrafo</button>
 </section>
 
 <section id="themeSection" class="card hidden">
@@ -494,6 +497,33 @@ function restart(){
   document.getElementById("playerLie").value="";
   document.getElementById("themeText").innerText="---";
   updateProfileUI();
+}
+
+let deferredPrompt=null;
+
+window.addEventListener("beforeinstallprompt",(e)=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  const btn=document.getElementById("installBtn");
+  if(btn) btn.classList.remove("hidden");
+});
+
+async function installApp(){
+  if(!deferredPrompt){
+    alert("A instalação ainda não está disponível neste navegador. Publica online com HTTPS para ativar.");
+    return;
+  }
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt=null;
+  const btn=document.getElementById("installBtn");
+  if(btn) btn.classList.add("hidden");
+}
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
+  });
 }
 
 loadProfile();

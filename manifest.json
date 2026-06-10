@@ -1,0 +1,24 @@
+{
+  "name": "Mentirógrafo™",
+  "short_name": "Mentirógrafo",
+  "description": "O jogo nacional das mentiras absurdas.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#08020d",
+  "theme_color": "#4b0b75",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

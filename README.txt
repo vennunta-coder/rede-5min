@@ -1,15 +1,16 @@
-MENTIRÓGRAFO™ v5
-
-Como usar:
-1. Abre o ficheiro index.html no navegador.
-2. Escreve o nome.
-3. Escolhe um adversário.
-4. Joga Duelo Normal ou Arena Global.
+MENTIRÓGRAFO™ v6 PWA
 
 Inclui:
-- Duelo Normal
-- Arena Global de 10 rondas
-- Roda da Mentira
-- Ranking local
-- Perfil com XP, nível e moedas
-- Conquistas guardadas no navegador
+- index.html completo
+- manifest.json
+- service-worker.js
+- icon.svg
+- PWA instalável após publicação online com HTTPS
+
+Como testar:
+1. Abre index.html no navegador para jogar localmente.
+2. Para instalar como app, publica a pasta num servidor HTTPS, GitHub Pages ou Vercel.
+3. Depois abre no Chrome/Edge e usa o botão “Instalar Mentirógrafo”.
+
+Nota:
+O botão de instalação só aparece quando o navegador permite PWA.
