@@ -1,113 +1,503 @@
-<!DOCTYPE html><html lang="pt-BR"><head><title>Rede dos 5 Minutos</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script src="https://cdn.tailwindcss.com"></script><link rel="icon" href="favicon.ico"></head>
-<body class="bg-neutral-950 text-neutral-50">
-<header class="sticky top-0 bg-neutral-950/80 backdrop-blur border-b border-neutral-800 z-50">
-  <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-    <div class="flex items-center gap-2">
-      <img src="logo.svg" alt="R5M" class="h-7 rounded-md ring-1 ring-orange-500/40"/>
-      <span class="font-bold text-lg">Rede dos 5 Minutos</span>
-    </div>
-    <button id="menuBtn" class="md:hidden text-orange-500 text-2xl leading-none">☰</button>
-    <nav id="menuNav" class="hidden md:flex gap-4 text-sm text-neutral-300">
-      <a class="hover:text-orange-400" href="feed.html">Feed</a>
-      <a class="hover:text-orange-400" href="videos.html">Vídeos</a>
-      <a class="hover:text-orange-400" href="perfil.html">Perfil</a>
-      <a class="hover:text-orange-400" href="amigos.html">Amigos</a>
-      <a class="hover:text-orange-400" href="mensagens.html">Mensagens</a>
-      <a class="hover:text-orange-400" href="notificacoes.html">Notificações</a>
-      <a class="hover:text-orange-400" href="config.html">Configurações</a>
-    </nav>
-  </div>
-  <div id="menuMobile" class="md:hidden hidden border-t border-neutral-800 bg-neutral-950">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-2 text-neutral-300">
-      <a class="hover:text-orange-400" href="feed.html">Feed</a>
-      <a class="hover:text-orange-400" href="videos.html">Vídeos</a>
-      <a class="hover:text-orange-400" href="perfil.html">Perfil</a>
-      <a class="hover:text-orange-400" href="amigos.html">Amigos</a>
-      <a class="hover:text-orange-400" href="mensagens.html">Mensagens</a>
-      <a class="hover:text-orange-400" href="notificacoes.html">Notificações</a>
-      <a class="hover:text-orange-400" href="config.html">Configurações</a>
-    </div>
-  </div>
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentirógrafo™ v5</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#4b0b75,#08020d 75%);color:white;min-height:100vh}
+header{text-align:center;padding:28px 16px}
+h1{margin:0;font-size:42px;color:#ffcc00;text-shadow:0 0 22px #ff00cc}
+.subtitle{color:#ddd}
+.container{max-width:980px;margin:auto;padding:20px}
+.card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:24px;margin-bottom:20px;box-shadow:0 0 28px rgba(255,0,180,.18)}
+input,textarea{width:100%;border:none;border-radius:16px;padding:16px;font-size:16px;margin-top:10px}
+textarea{height:125px;resize:none}
+.characters,.score-grid,.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:16px}
+.character{cursor:pointer;text-align:center;padding:18px;border-radius:20px;background:rgba(0,0,0,.35);border:2px solid transparent;transition:.2s}
+.character:hover,.character.active{border-color:#ffcc00;transform:scale(1.04);background:rgba(255,204,0,.14)}
+.emoji{font-size:42px}
+button{width:100%;padding:18px;border:none;border-radius:18px;background:linear-gradient(135deg,#ffcc00,#ff0088);color:#160014;font-weight:900;font-size:18px;cursor:pointer;margin-top:14px}
+button:hover{filter:brightness(1.1)}
+.hidden{display:none}
+.timer{font-size:34px;font-weight:900;color:#ffcc00}
+.lie-box,.theme-box{background:rgba(0,0,0,.35);border:2px solid #ffcc00;padding:18px;border-radius:16px;font-size:20px;line-height:1.4}
+.theme-box{text-align:center}
+.theme-big{font-size:36px;font-weight:900;color:#ffcc00}
+.score,.profile-stat{background:rgba(255,255,255,.12);padding:16px;border-radius:16px;text-align:center}
+.score strong,.profile-stat strong{font-size:28px;color:#ffcc00}
+.ranking-item,.achievement{display:flex;justify-content:space-between;gap:10px;padding:13px;background:rgba(255,255,255,.08);border-radius:12px;margin-bottom:8px}
+.achievement.unlocked{border:1px solid #ffcc00}
+.achievement.locked{opacity:.45}
+#countdown{position:fixed;inset:0;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;font-size:78px;font-weight:900;color:#ffcc00;text-shadow:0 0 30px #ff00cc;z-index:9999}
+#memeCard{background:linear-gradient(135deg,#250033,#ff0088);padding:26px;border-radius:24px;text-align:center;margin-top:20px;border:2px solid #ffcc00}
+#memeCard h2{color:#ffcc00;margin-top:0}
+#memeText{font-size:24px;font-weight:900;line-height:1.3}
+footer{text-align:center;padding:30px;color:#aaa;font-size:13px}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>🎭 Mentirógrafo™</h1>
+  <p class="subtitle">O jogo nacional das mentiras absurdas.</p>
 </header>
-<main class="max-w-3xl mx-auto px-4 py-10 space-y-8">
-<section class="max-w-6xl mx-auto px-4 pt-8 md:pt-14 text-center">
-  <h1 class="text-4xl md:text-6xl font-black mb-3">Conecte-se em <span class="text-orange-500">5 minutos</span> por dia</h1>
-  <p class="max-w-2xl mx-auto text-neutral-300 text-lg mb-8">Rede social minimalista, rápida e consciente.</p>
-</section>
-<section id="registro" class="max-w-6xl mx-auto px-4 pb-10">
-  <div class="max-w-xl mx-auto p-6 rounded-2xl border border-neutral-800 bg-neutral-900 shadow">
-    <h2 class="text-2xl font-bold mb-4 text-center text-orange-500">Cadastro Rápido</h2>
-    <form id="cadastroForm" class="space-y-4">
-      <div><label class="block mb-1 text-sm text-neutral-300" for="nome">Nome</label>
-        <input id="nome" type="text" required class="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Seu nome"></div>
-      <div><label class="block mb-1 text-sm text-neutral-300" for="email">Email</label>
-        <input id="email" type="email" required class="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="seuemail@exemplo.com"></div>
-      <div>
-        <span class="block mb-2 text-sm text-neutral-300">Como você se identifica? (privado)</span>
-        <div class="grid sm:grid-cols-2 gap-2 text-sm">
-          <label class="flex items-center gap-2 p-2 rounded-lg border border-neutral-800 bg-neutral-950"><input type="radio" name="genero" value="Masculino" required> Masculino</label>
-          <label class="flex items-center gap-2 p-2 rounded-lg border border-neutral-800 bg-neutral-950"><input type="radio" name="genero" value="Feminino"> Feminino</label>
-          <label class="flex items-center gap-2 p-2 rounded-lg border border-neutral-800 bg-neutral-950"><input type="radio" name="genero" value="Não-binário"> Não-binário</label>
-          <label class="flex items-center gap-2 p-2 rounded-lg border border-neutral-800 bg-neutral-950"><input type="radio" name="genero" value="Outro"> Outro</label>
-          <label class="flex items-center gap-2 p-2 rounded-lg border border-neutral-800 bg-neutral-950 sm:col-span-2"><input type="radio" name="genero" value="Prefiro não dizer"> Prefiro não dizer</label>
-        </div>
-      </div>
-      <button type="submit" class="w-full bg-orange-500 text-neutral-950 font-semibold px-4 py-3 rounded-xl hover:bg-orange-400 transition">Entrar</button>
-      <p id="msg" class="hidden text-center text-green-400 text-sm">Cadastro ok! Redirecionando…</p>
-    </form>
+
+<main class="container">
+
+<section class="card">
+  <h2>👤 Perfil do Jogador</h2>
+  <div class="profile-grid">
+    <div class="profile-stat">Nome<br><strong id="profileName">---</strong></div>
+    <div class="profile-stat">Nível<br><strong id="profileLevel">1</strong></div>
+    <div class="profile-stat">Título<br><strong id="profileTitle">Aprendiz</strong></div>
+    <div class="profile-stat">XP<br><strong id="profileXP">0</strong></div>
+    <div class="profile-stat">Moedas<br><strong id="profileCoins">0</strong></div>
+    <div class="profile-stat">Conquistas<br><strong id="profileAchievements">0/5</strong></div>
   </div>
 </section>
-<section id="sobre" class="max-w-6xl mx-auto px-4 py-10 text-center border-t border-neutral-800">
-  <h2 class="text-3xl font-bold mb-4">Sobre a Rede</h2>
-  <p class="max-w-3xl mx-auto text-neutral-300">A Rede dos 5 Minutos nasceu da necessidade de desacelerar. Aqui, cada pessoa tem apenas cinco minutos por dia para se expressar e interagir. É uma pausa consciente em meio ao excesso de informação.</p>
-</section>
-<section id="como-funciona" class="bg-neutral-900 py-14">
-  <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6 text-center">
-    <div class="p-6 rounded-2xl border border-neutral-800 bg-neutral-950"><h3 class="text-lg md:text-xl font-semibold mb-2">1. Acesse</h3><p class="text-neutral-400">Uma vez por dia, entre na rede.</p></div>
-    <div class="p-6 rounded-2xl border border-neutral-800 bg-neutral-950"><h3 class="text-lg md:text-xl font-semibold mb-2">2. Compartilhe</h3><p class="text-neutral-400">Poste seus pensamentos ou fotos em até 5 minutos.</p></div>
-    <div class="p-6 rounded-2xl border border-neutral-800 bg-neutral-950"><h3 class="text-lg md:text-xl font-semibold mb-2">3. Conecte</h3><p class="text-neutral-400">Interaja de forma rápida, sem perder tempo.</p></div>
+
+<section id="home" class="card">
+  <h2>Nome do jogador</h2>
+  <input id="playerName" placeholder="Ex: Pedro" oninput="syncPlayerName()">
+
+  <h2>Escolhe o adversário</h2>
+  <div class="characters">
+    <div class="character" onclick="selectCharacter(this,'Dona Alzira','👵')"><div class="emoji">👵</div><h3>Dona Alzira</h3><p>Mentiras antigas.</p></div>
+    <div class="character" onclick="selectCharacter(this,'Zé Pescador','🐟')"><div class="emoji">🐟</div><h3>Zé Pescador</h3><p>Peixes impossíveis.</p></div>
+    <div class="character" onclick="selectCharacter(this,'Toni Empreendedor','🧑‍💼')"><div class="emoji">🧑‍💼</div><h3>Toni</h3><p>Negócios absurdos.</p></div>
+    <div class="character" onclick="selectCharacter(this,'Dr. Antunes','👨‍⚕️')"><div class="emoji">👨‍⚕️</div><h3>Dr. Antunes</h3><p>Curas duvidosas.</p></div>
+    <div class="character" onclick="selectCharacter(this,'Professor Pardal','🧪')"><div class="emoji">🧪</div><h3>Prof. Pardal</h3><p>Ciência maluca.</p></div>
+    <div class="character" onclick="selectCharacter(this,'Padre Toninho','⛪')"><div class="emoji">⛪</div><h3>Padre Toninho</h3><p>Milagres suspeitos.</p></div>
   </div>
+
+  <button onclick="startNormalGame()">🎡 Duelo Normal</button>
+  <button onclick="startArena()">🌍 Arena Global</button>
 </section>
-<section id="faq" class="max-w-6xl mx-auto px-4 py-12 border-t border-neutral-800">
-  <div class="max-w-2xl mx-auto">
-    <h2 class="text-2xl font-bold mb-6 text-center text-orange-500">Perguntas Frequentes</h2>
-    <div class="space-y-6">
-      <div><h4 class="font-semibold">É pago?</h4><p class="text-neutral-400">Não, o acesso básico será gratuito.</p></div>
-      <div><h4 class="font-semibold">Posso postar mais de uma vez?</h4><p class="text-neutral-400">Você pode postar e interagir dentro dos 5 minutos diários.</p></div>
-      <div><h4 class="font-semibold">Posso recuperar posts antigos?</h4><p class="text-neutral-400">Sim, seu histórico fica salvo no seu perfil.</p></div>
-    </div>
+
+<section id="themeSection" class="card hidden">
+  <h2 id="themeTitle">🎡 Tema da ronda</h2>
+  <div class="theme-box">
+    <p>A tua mentira tem de envolver:</p>
+    <div id="themeText" class="theme-big">---</div>
   </div>
+  <button onclick="startCountdown()">🔥 Começar Duelo</button>
 </section>
-<script>
-document.getElementById('cadastroForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  var nome = document.getElementById('nome').value.trim();
-  var email = document.getElementById('email').value.trim();
-  var generoEl = document.querySelector("input[name='genero']:checked");
-  var genero = generoEl ? generoEl.value : '';
-  if(!nome || !email || !genero) return;
-  localStorage.setItem('r5m_nome', nome);
-  localStorage.setItem('r5m_email', email);
-  localStorage.setItem('r5m_genero', genero);
-  document.getElementById('msg').classList.remove('hidden');
-  setTimeout(function(){ window.location.href = 'feed.html'; }, 800);
-});
-</script>
+
+<section id="duel" class="card hidden">
+  <h2 id="duelTitle">Duelo</h2>
+  <p class="timer">⏳ <span id="time">60</span>s</p>
+
+  <h3>Tema obrigatório:</h3>
+  <div class="theme-box" id="duelTheme"></div>
+
+  <h3>Mentira do adversário:</h3>
+  <div class="lie-box" id="enemyLie"></div>
+
+  <h3>A tua mentira:</h3>
+  <textarea id="playerLie" placeholder="Escreve aqui a mentira mais descarada..."></textarea>
+
+  <button onclick="judgeLie()">🤖 Enviar Mentira</button>
+</section>
+
+<section id="result" class="card hidden">
+  <h2>Resultado Final</h2>
+
+  <div class="score-grid">
+    <div class="score">Criatividade<br><strong id="criatividade">0</strong></div>
+    <div class="score">Absurdo<br><strong id="absurdo">0</strong></div>
+    <div class="score">Humor<br><strong id="humor">0</strong></div>
+    <div class="score">Descaramento<br><strong id="descaramento">0</strong></div>
+    <div class="score">Bónus Tema<br><strong id="bonus">0</strong></div>
+  </div>
+
+  <h2>🏆 Total: <span id="total">0</span></h2>
+  <p id="comment"></p>
+  <p><strong id="rewardText"></strong></p>
+
+  <div id="memeCard">
+    <h2>🎭 Mentirógrafo™</h2>
+    <p><strong>Tema:</strong> <span id="memeTheme"></span></p>
+    <p id="memeText"></p>
+    <p id="memeScore"></p>
+  </div>
+
+  <button id="primaryResultButton" onclick="shareMeme()">📱 Partilhar como Meme</button>
+  <button onclick="restart()">🔁 Jogar Outra Vez</button>
+</section>
+
+<section id="arenaFinal" class="card hidden">
+  <h2>🌍 Arena Global Finalizada</h2>
+  <h1 id="arenaTitle"></h1>
+  <p>Pontuação total em 10 rondas:</p>
+  <h2>🏆 <span id="arenaFinalScore">0</span> pts</h2>
+  <button onclick="restart()">🔁 Jogar Novamente</button>
+</section>
+
+<section class="card">
+  <h2>🏆 Conquistas</h2>
+  <div id="achievementsBox"></div>
+</section>
+
+<section class="card">
+  <h2>🏆 Ranking Local</h2>
+  <div id="ranking"></div>
+</section>
+
 </main>
-<footer class="border-t border-neutral-800 py-10 text-center text-sm text-neutral-400">
-  <div class="flex justify-center gap-8 mb-4">
-<span class="inline-block text-orange-500 hover:drop-shadow-[0_0_8px_#f97316]">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-<path stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4v5c0 5.25-3.5 10-8 11-4.5-1-8-5.75-8-11V7l8-4z"/></svg></span>
-<span class="inline-block text-orange-500 hover:drop-shadow-[0_0_8px_#f97316]">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>
-<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v3m0 12v3m9-9h-3M6 12H3"/></svg></span>
-<span class="inline-block text-orange-500 hover:drop-shadow-[0_0_8px_#f97316]">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-<path stroke-linecap="round" stroke-linejoin="round" d="M12 2a9 9 0 00-9 9v3c0 4 4 8 9 8s9-4 9-8v-3a9 9 0 00-9-9z"/>
-<path stroke-linecap="round" stroke-linejoin="round" d="M9 14h.01M15 14h.01M9 18c1.5 1 4.5 1 6 0"/></svg></span>
-</div>
-  <p class="font-mono">© 2025 <span class="text-orange-500 font-semibold">Rede dos 5 Minutos</span> — Todos os direitos reservados.</p>
-</footer>
-<script src="script.js"></script></body></html>
+<footer>© 2026 Mentirógrafo™ Portugal — Humor, absurdo e descaramento.</footer>
+
+<script>
+let selectedName="", selectedEmoji="", currentTheme="";
+let timer, timeLeft=60, finalTotal=0, finalLie="", lastBonus=0;
+let arenaMode=false, arenaRound=1, arenaTotal=0;
+const maxArenaRounds=10;
+
+const profileKey="mentirografoProfileV5";
+const rankingKey="mentirografoRankingV5";
+
+let profile={
+  name:"---",
+  xp:0,
+  coins:0,
+  achievements:[]
+};
+
+const achievements=[
+  {id:"first_lie",name:"🏆 Primeira Mentira",desc:"Envia a tua primeira mentira."},
+  {id:"score_300",name:"🔥 300+ Pontos",desc:"Consegue 300 pontos numa ronda."},
+  {id:"score_400",name:"👑 400+ Pontos",desc:"Consegue 400 pontos numa ronda."},
+  {id:"arena_complete",name:"🌍 Arena Global",desc:"Completa as 10 rondas."},
+  {id:"theme_bonus",name:"🎡 Bónus Máximo",desc:"Atinge 50 pontos de bónus de tema."}
+];
+
+const themes=["Futebol","Portugal","Trabalho","Casamento","Escola","Tecnologia","Dinossauros","Espaço","Família","Praia","Restaurante","Política","Bancos","Padaria","Tasca","Ginásio","Vizinhos","Namoro"];
+
+const lies={
+"Dona Alzira":["No meu tempo os pombos entregavam emails com selo.","A minha televisão funcionava a carvão.","O inverno durava 14 meses e ainda sobrava frio.","Antigamente os frigoríficos cantavam fado quando estavam vazios."],
+"Zé Pescador":["Pesquei uma sardinha que sabia declarar IRS.","Uma vez apanhei um polvo que jogava dominó.","O mar ligou-me a pedir sal emprestado.","Pesquei um bacalhau que vinha com fatura e garantia."],
+"Toni Empreendedor":["Vendi NFTs a extraterrestres reformados.","Criei uma startup que alugava sombras no verão.","Faturei milhões a vender Wi-Fi para caracóis.","Abri uma empresa de consultoria para plantas indecisas."],
+"Dr. Antunes":["Curei preguiça com chá de impressora.","Operei um relógio que tinha ansiedade.","Receitei vitamina C a um computador gripado.","Fiz fisioterapia a uma cadeira que coxeava."],
+"Professor Pardal":["Inventei uma máquina que transforma filas de espera em bolachas.","Criei um capacete que traduz pensamentos de batatas.","Descobri que os semáforos ficam vermelhos por vergonha.","Ensinei uma torradeira a fazer reuniões por Zoom."],
+"Padre Toninho":["Fiz um milagre e multipliquei pastéis de nata numa rotunda.","Abençoei um micro-ondas e ele passou a aquecer sentimentos.","Uma vez confessei um robô que tinha pecado em binário.","Transformei água com gás em refrigerante sagrado."]
+};
+
+const comments=[
+"Esta mentira foi tão absurda que a realidade pediu baixa médica.",
+"Três fact-checkers desistiram depois de ler isto.",
+"Mentira de alto nível. O polígrafo explodiu.",
+"Isto não foi uma mentira. Foi património nacional da tanga.",
+"A física leu isto e foi tirar férias.",
+"Esta mentira devia ser ensinada nas escolas de descaramento."
+];
+
+function loadProfile(){
+  const saved=localStorage.getItem(profileKey);
+  if(saved) profile=JSON.parse(saved);
+  if(profile.name && profile.name !== "---") document.getElementById("playerName").value=profile.name;
+  updateProfileUI();
+  renderAchievements();
+}
+
+function saveProfile(){
+  localStorage.setItem(profileKey,JSON.stringify(profile));
+  updateProfileUI();
+  renderAchievements();
+}
+
+function syncPlayerName(){
+  const name=document.getElementById("playerName").value.trim();
+  profile.name=name || "---";
+  saveProfile();
+}
+
+function getLevelData(xp){
+  if(xp>=5000)return{level:5,title:"Lenda Nacional da Tanga"};
+  if(xp>=3000)return{level:4,title:"Mestre da Mentira"};
+  if(xp>=1500)return{level:3,title:"Profissional do Descaramento"};
+  if(xp>=500)return{level:2,title:"Mentiroso Promissor"};
+  return{level:1,title:"Aprendiz da Tanga"};
+}
+
+function updateProfileUI(){
+  const level=getLevelData(profile.xp);
+  document.getElementById("profileName").innerText=profile.name || "---";
+  document.getElementById("profileLevel").innerText=level.level;
+  document.getElementById("profileTitle").innerText=level.title;
+  document.getElementById("profileXP").innerText=profile.xp;
+  document.getElementById("profileCoins").innerText=profile.coins;
+  document.getElementById("profileAchievements").innerText=profile.achievements.length+"/"+achievements.length;
+}
+
+function unlockAchievement(id){
+  if(!profile.achievements.includes(id)){
+    profile.achievements.push(id);
+  }
+}
+
+function renderAchievements(){
+  const box=document.getElementById("achievementsBox");
+  box.innerHTML=achievements.map(a=>{
+    const ok=profile.achievements.includes(a.id);
+    return `<div class="achievement ${ok?'unlocked':'locked'}"><span>${a.name}<br><small>${a.desc}</small></span><strong>${ok?'✅':'🔒'}</strong></div>`;
+  }).join("");
+}
+
+function playSound(type){
+  const audio=new (window.AudioContext||window.webkitAudioContext)();
+  const osc=audio.createOscillator();
+  const gain=audio.createGain();
+  osc.connect(gain); gain.connect(audio.destination);
+  osc.frequency.value=type==="win"?980:type==="fail"?180:type==="start"?760:500;
+  gain.gain.value=.08;
+  osc.start();
+  setTimeout(()=>{osc.stop();audio.close()},150);
+}
+
+function selectCharacter(element,name,emoji){
+  playSound("click");
+  selectedName=name; selectedEmoji=emoji;
+  document.querySelectorAll(".character").forEach(c=>c.classList.remove("active"));
+  element.classList.add("active");
+}
+
+function validateStart(){
+  if(!document.getElementById("playerName").value.trim()){alert("Escreve primeiro o teu nome.");return false}
+  if(!selectedName){alert("Escolhe primeiro um adversário.");return false}
+  syncPlayerName();
+  return true;
+}
+
+function startNormalGame(){
+  if(!validateStart())return;
+  arenaMode=false;
+  spinTheme();
+}
+
+function startArena(){
+  if(!validateStart())return;
+  arenaMode=true;
+  arenaRound=1;
+  arenaTotal=0;
+  spinTheme();
+}
+
+function spinTheme(){
+  playSound("start");
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("themeSection").classList.remove("hidden");
+  document.getElementById("themeTitle").innerText=arenaMode?`🌍 Arena Global — Ronda ${arenaRound}/${maxArenaRounds}`:"🎡 Tema da ronda";
+
+  let spins=0;
+  const themeText=document.getElementById("themeText");
+  const interval=setInterval(()=>{
+    currentTheme=themes[Math.floor(Math.random()*themes.length)];
+    themeText.innerText=currentTheme;
+    spins++;
+    if(spins>=14){
+      clearInterval(interval);
+      currentTheme=themes[Math.floor(Math.random()*themes.length)];
+      themeText.innerText=currentTheme;
+      playSound("win");
+    }
+  },90);
+}
+
+function startCountdown(){
+  playSound("start");
+  const box=document.createElement("div");
+  box.id="countdown";
+  document.body.appendChild(box);
+  let count=3;
+  box.innerText=count;
+  const interval=setInterval(()=>{
+    count--;
+    if(count>0){box.innerText=count;playSound("click")}
+    else if(count===0){box.innerText="MENTE!";playSound("start")}
+    else{clearInterval(interval);box.remove();beginDuel()}
+  },1000);
+}
+
+function beginDuel(){
+  document.getElementById("themeSection").classList.add("hidden");
+  document.getElementById("duel").classList.remove("hidden");
+  document.getElementById("duelTitle").innerText=arenaMode?`🌍 Arena Global — Ronda ${arenaRound}/${maxArenaRounds}`:`${selectedEmoji} Duelo contra ${selectedName}`;
+  document.getElementById("duelTheme").innerText=currentTheme;
+  const enemyOptions=lies[selectedName];
+  document.getElementById("enemyLie").innerText=enemyOptions[Math.floor(Math.random()*enemyOptions.length)];
+  timeLeft=60;
+  document.getElementById("time").innerText=timeLeft;
+  timer=setInterval(()=>{
+    timeLeft--;
+    document.getElementById("time").innerText=timeLeft;
+    if(timeLeft<=0){clearInterval(timer);judgeLie()}
+  },1000);
+}
+
+function judgeLie(){
+  clearInterval(timer);
+  const text=document.getElementById("playerLie").value.trim();
+  if(!text){alert("Escreve uma mentira primeiro.");return}
+
+  finalLie=text;
+  const criatividade=randomScore(text.length);
+  const absurdo=randomScore(text.length+8);
+  const humor=randomScore(text.length+4);
+  const descaramento=randomScore(text.length+12);
+  const bonus=calculateThemeBonus(text,currentTheme);
+  lastBonus=bonus;
+
+  finalTotal=criatividade+absurdo+humor+descaramento+bonus;
+  if(arenaMode) arenaTotal+=finalTotal;
+
+  unlockAchievement("first_lie");
+  if(finalTotal>=300)unlockAchievement("score_300");
+  if(finalTotal>=400)unlockAchievement("score_400");
+  if(bonus>=50)unlockAchievement("theme_bonus");
+
+  document.getElementById("duel").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("criatividade").innerText=criatividade;
+  document.getElementById("absurdo").innerText=absurdo;
+  document.getElementById("humor").innerText=humor;
+  document.getElementById("descaramento").innerText=descaramento;
+  document.getElementById("bonus").innerText=bonus;
+  document.getElementById("total").innerText=finalTotal;
+
+  let comment=comments[Math.floor(Math.random()*comments.length)];
+  if(bonus>=40) comment+=" Bónus alto: usaste o tema como mestre da tanga.";
+  if(bonus===0) comment+=" Ignoraste o tema e isso custou pontos.";
+  document.getElementById("comment").innerText=comment;
+
+  document.getElementById("memeTheme").innerText=currentTheme;
+  document.getElementById("memeText").innerText="“"+finalLie+"”";
+  document.getElementById("memeScore").innerText="Pontuação: "+finalTotal+" pts";
+
+  const btn=document.getElementById("primaryResultButton");
+
+  if(arenaMode){
+    document.getElementById("rewardText").innerText=`Ronda ${arenaRound}/${maxArenaRounds} · Total Arena: ${arenaTotal} pts`;
+    btn.innerText=arenaRound>=maxArenaRounds?"🏁 Ver Resultado Final":"➡️ Próxima Ronda";
+    btn.onclick=arenaRound>=maxArenaRounds?showArenaFinal:nextArenaRound;
+  }else{
+    const xp=finalTotal>=340?150:finalTotal>=300?100:20;
+    const coins=finalTotal>=340?80:finalTotal>=300?50:10;
+    profile.xp+=xp;
+    profile.coins+=coins;
+    document.getElementById("rewardText").innerText=`+${xp} XP · +${coins} Moedas`;
+    btn.innerText="📱 Partilhar como Meme";
+    btn.onclick=shareMeme;
+    saveRanking(finalTotal,"Duelo");
+    saveProfile();
+    loadRanking();
+  }
+
+  playSound(finalTotal>=300?"win":"fail");
+}
+
+function nextArenaRound(){
+  arenaRound++;
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("playerLie").value="";
+  spinTheme();
+}
+
+function showArenaFinal(){
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("arenaFinal").classList.remove("hidden");
+  let title=arenaTotal>=3500?"👑 Campeão Nacional da Tanga":arenaTotal>=2800?"🔥 Mestre do Descaramento":arenaTotal>=2000?"🎭 Mentirógrafo Promissor":"🥔 Aprendiz da Mentira";
+  document.getElementById("arenaTitle").innerText=title;
+  document.getElementById("arenaFinalScore").innerText=arenaTotal;
+  profile.xp+=500;
+  profile.coins+=250;
+  unlockAchievement("arena_complete");
+  saveRanking(arenaTotal,"Arena Global");
+  saveProfile();
+  loadRanking();
+}
+
+function calculateThemeBonus(text,theme){
+  const lower=text.toLowerCase();
+  const t=theme.toLowerCase();
+  const keywords={
+    "futebol":["bola","golo","ronaldo","benfica","sporting","porto","árbitro","estádio"],
+    "portugal":["portugal","lisboa","porto","fado","pastel","sardinha","bacalhau"],
+    "trabalho":["chefe","emprego","reunião","salário","empresa","trabalho"],
+    "casamento":["noiva","noivo","aliança","casamento","lua de mel"],
+    "escola":["professor","teste","aluno","escola","caderno"],
+    "tecnologia":["wifi","internet","robô","computador","app","telemóvel"],
+    "dinossauros":["dinossauro","t-rex","jurássico","fóssil"],
+    "espaço":["lua","marte","nasa","astronauta","foguetão","planeta"],
+    "família":["mãe","pai","avó","avô","primo","família"],
+    "praia":["areia","mar","sol","toalha","praia"],
+    "restaurante":["garçom","comida","menu","restaurante","sopa"],
+    "política":["presidente","ministro","parlamento","voto","política"],
+    "bancos":["banco","dinheiro","empréstimo","cartão","juros"],
+    "padaria":["pão","croissant","forno","padaria","bolo"],
+    "tasca":["tasca","vinho","petisco","balcão","bifana"],
+    "ginásio":["ginásio","halter","músculo","treino","proteína"],
+    "vizinhos":["vizinho","prédio","condomínio","barulho","escada"],
+    "namoro":["amor","namoro","beijo","ex","coração"]
+  };
+  let bonus=0;
+  if(lower.includes(t)) bonus+=40;
+  (keywords[t]||[]).forEach(word=>{if(lower.includes(word)) bonus+=10});
+  return Math.min(bonus,50);
+}
+
+function randomScore(seed){
+  let min=50;
+  if(seed>35)min=70;
+  if(seed>75)min=80;
+  return Math.floor(Math.random()*(100-min+1))+min;
+}
+
+function saveRanking(score,mode){
+  const player=document.getElementById("playerName").value.trim()||"Jogador";
+  const ranking=JSON.parse(localStorage.getItem(rankingKey))||[];
+  ranking.push({name:player,score,theme:currentTheme,mode});
+  ranking.sort((a,b)=>b.score-a.score);
+  localStorage.setItem(rankingKey,JSON.stringify(ranking.slice(0,10)));
+}
+
+function loadRanking(){
+  const ranking=JSON.parse(localStorage.getItem(rankingKey))||[];
+  const box=document.getElementById("ranking");
+  if(ranking.length===0){box.innerHTML="<p>Ainda sem pontuações.</p>";return}
+  box.innerHTML=ranking.map((item,index)=>`
+    <div class="ranking-item">
+      <span>${index+1}. ${item.name} <small>(${item.mode})</small></span>
+      <strong>${item.score} pts</strong>
+    </div>
+  `).join("");
+}
+
+function shareMeme(){
+  const text="🎭 Mentirógrafo™\n\nTema: "+currentTheme+"\n\nA minha mentira:\n“"+finalLie+"”\n\nPontuação: "+finalTotal+" pts";
+  if(navigator.share){navigator.share({title:"Mentirógrafo™",text})}
+  else{navigator.clipboard.writeText(text);alert("Meme copiado para partilhares.")}
+}
+
+function restart(){
+  clearInterval(timer);
+  arenaMode=false;
+  arenaRound=1;
+  arenaTotal=0;
+  currentTheme="";
+  document.getElementById("home").classList.remove("hidden");
+  document.getElementById("themeSection").classList.add("hidden");
+  document.getElementById("duel").classList.add("hidden");
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("arenaFinal").classList.add("hidden");
+  document.getElementById("playerLie").value="";
+  document.getElementById("themeText").innerText="---";
+  updateProfileUI();
+}
+
+loadProfile();
+loadRanking();
+</script>
+</body>
+</html>
