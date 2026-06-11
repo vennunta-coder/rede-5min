@@ -1,533 +1,944 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mentirógrafo™ v6 PWA</title>
-<meta name="theme-color" content="#4b0b75">
-<link rel="manifest" href="manifest.json">
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#4b0b75,#08020d 75%);color:white;min-height:100vh}
-header{text-align:center;padding:28px 16px}
-h1{margin:0;font-size:42px;color:#ffcc00;text-shadow:0 0 22px #ff00cc}
-.subtitle{color:#ddd}
-.container{max-width:980px;margin:auto;padding:20px}
-.card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:24px;margin-bottom:20px;box-shadow:0 0 28px rgba(255,0,180,.18)}
-input,textarea{width:100%;border:none;border-radius:16px;padding:16px;font-size:16px;margin-top:10px}
-textarea{height:125px;resize:none}
-.characters,.score-grid,.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:16px}
-.character{cursor:pointer;text-align:center;padding:18px;border-radius:20px;background:rgba(0,0,0,.35);border:2px solid transparent;transition:.2s}
-.character:hover,.character.active{border-color:#ffcc00;transform:scale(1.04);background:rgba(255,204,0,.14)}
-.emoji{font-size:42px}
-button{width:100%;padding:18px;border:none;border-radius:18px;background:linear-gradient(135deg,#ffcc00,#ff0088);color:#160014;font-weight:900;font-size:18px;cursor:pointer;margin-top:14px}
-button:hover{filter:brightness(1.1)}
-.hidden{display:none}
-.timer{font-size:34px;font-weight:900;color:#ffcc00}
-.lie-box,.theme-box{background:rgba(0,0,0,.35);border:2px solid #ffcc00;padding:18px;border-radius:16px;font-size:20px;line-height:1.4}
-.theme-box{text-align:center}
-.theme-big{font-size:36px;font-weight:900;color:#ffcc00}
-.score,.profile-stat{background:rgba(255,255,255,.12);padding:16px;border-radius:16px;text-align:center}
-.score strong,.profile-stat strong{font-size:28px;color:#ffcc00}
-.ranking-item,.achievement{display:flex;justify-content:space-between;gap:10px;padding:13px;background:rgba(255,255,255,.08);border-radius:12px;margin-bottom:8px}
-.achievement.unlocked{border:1px solid #ffcc00}
-.achievement.locked{opacity:.45}
-#countdown{position:fixed;inset:0;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;font-size:78px;font-weight:900;color:#ffcc00;text-shadow:0 0 30px #ff00cc;z-index:9999}
-#memeCard{background:linear-gradient(135deg,#250033,#ff0088);padding:26px;border-radius:24px;text-align:center;margin-top:20px;border:2px solid #ffcc00}
-#memeCard h2{color:#ffcc00;margin-top:0}
-#memeText{font-size:24px;font-weight:900;line-height:1.3}
-footer{text-align:center;padding:30px;color:#aaa;font-size:13px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond Search - Modo Real Grounded</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #080c14;
+            color: #f3f4f6;
+        }
+        .glow-indigo {
+            box-shadow: 0 0 50px -12px rgba(99, 102, 241, 0.35);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 40px -15px rgba(16, 185, 129, 0.3);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
 </head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white relative overflow-x-hidden">
 
-<body>
-<header>
-  <h1>🎭 Mentirógrafo™</h1>
-  <p class="subtitle">O jogo nacional das mentiras absurdas.</p>
-</header>
+    <!-- Decorative background elements -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-gradient-to-b from-indigo-950/20 via-transparent to-transparent pointer-events-none blur-3xl"></div>
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/2 right-10 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
-<main class="container">
+    <!-- Header -->
+    <header class="relative z-10 border-b border-slate-800/60 bg-slate-950/40 backdrop-blur-md px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center shadow-lg shadow-indigo-500/10">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">BEYOND<span class="text-indigo-400 font-extrabold">SEARCH</span></span>
+                    <span class="hidden sm:inline-block ml-2.5 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 rounded-full uppercase">Modo Real 🌐</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 text-xs">
+                <span class="flex items-center gap-1.5 px-3 py-1 bg-slate-900 border border-slate-800 rounded-lg text-slate-400">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Pesquisa Web em Tempo Real Ativa
+                </span>
+            </div>
+        </div>
+    </header>
 
-<section class="card">
-  <h2>👤 Perfil do Jogador</h2>
-  <div class="profile-grid">
-    <div class="profile-stat">Nome<br><strong id="profileName">---</strong></div>
-    <div class="profile-stat">Nível<br><strong id="profileLevel">1</strong></div>
-    <div class="profile-stat">Título<br><strong id="profileTitle">Aprendiz</strong></div>
-    <div class="profile-stat">XP<br><strong id="profileXP">0</strong></div>
-    <div class="profile-stat">Moedas<br><strong id="profileCoins">0</strong></div>
-    <div class="profile-stat">Conquistas<br><strong id="profileAchievements">0/5</strong></div>
-  </div>
-</section>
+    <!-- Main Content Container -->
+    <main class="relative z-10 flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-10 flex flex-col justify-center">
 
-<section id="home" class="card">
-  <h2>Nome do jogador</h2>
-  <input id="playerName" placeholder="Ex: Pedro" oninput="syncPlayerName()">
+        <!-- STEP 1: Search Landing Page -->
+        <div id="search-landing" class="w-full max-w-3xl mx-auto text-center py-10 transition-all duration-500 ease-in-out">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-xs text-indigo-300 font-semibold mb-6">
+                <span>✨ Próxima Geração de Pesquisa de Negócios</span>
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-5 text-white leading-none">
+                Respostas estruturadas, <br class="hidden sm:inline"><span class="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">grounded e reais</span>.
+            </h1>
+            <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+                Insira qualquer intenção de negócio em Portugal. Nós pesquisamos na web em tempo real e desenhamos a estratégia de execução completa com fontes fidedignas.
+            </p>
 
-  <h2>Escolhe o adversário</h2>
-  <div class="characters">
-    <div class="character" onclick="selectCharacter(this,'Dona Alzira','👵')"><div class="emoji">👵</div><h3>Dona Alzira</h3><p>Mentiras antigas.</p></div>
-    <div class="character" onclick="selectCharacter(this,'Zé Pescador','🐟')"><div class="emoji">🐟</div><h3>Zé Pescador</h3><p>Peixes impossíveis.</p></div>
-    <div class="character" onclick="selectCharacter(this,'Toni Empreendedor','🧑‍💼')"><div class="emoji">🧑‍💼</div><h3>Toni</h3><p>Negócios absurdos.</p></div>
-    <div class="character" onclick="selectCharacter(this,'Dr. Antunes','👨‍⚕️')"><div class="emoji">👨‍⚕️</div><h3>Dr. Antunes</h3><p>Curas duvidosas.</p></div>
-    <div class="character" onclick="selectCharacter(this,'Professor Pardal','🧪')"><div class="emoji">🧪</div><h3>Prof. Pardal</h3><p>Ciência maluca.</p></div>
-    <div class="character" onclick="selectCharacter(this,'Padre Toninho','⛪')"><div class="emoji">⛪</div><h3>Padre Toninho</h3><p>Milagres suspeitos.</p></div>
-  </div>
+            <!-- Search Box -->
+            <div class="glow-indigo bg-slate-900/80 border border-slate-800 rounded-2xl p-2 sm:p-3 mb-8 focus-within:border-indigo-500/50 focus-within:ring-1 focus-within:ring-indigo-500/20 transition-all duration-300 backdrop-blur-md">
+                <form id="search-form" class="flex flex-col sm:flex-row gap-2">
+                    <div class="flex-grow flex items-center px-3 gap-3">
+                        <svg class="w-6 h-6 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <input 
+                            id="search-input"
+                            type="text" 
+                            placeholder="Ex: Quero abrir um café de especialidade em Lisboa..." 
+                            class="w-full bg-transparent border-none text-white placeholder-slate-500 focus:outline-none focus:ring-0 text-base py-2.5"
+                            required
+                        >
+                    </div>
+                    <button 
+                        type="submit"
+                        class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-7 py-3 rounded-xl transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
+                    >
+                        <span>Gerar em Tempo Real</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
 
-  <button onclick="startNormalGame()">🎡 Duelo Normal</button>
-  <button onclick="startArena()">🌍 Arena Global</button>
-  <button id="installBtn" class="hidden" onclick="installApp()">📲 Instalar Mentirógrafo</button>
-</section>
+            <!-- Quick Suggestions -->
+            <div class="text-left max-w-xl mx-auto">
+                <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-3 text-center sm:text-left">Ideias de Exploração de Mercado Real:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button onclick="fillSearch('Quero abrir um café de especialidade em Lisboa')" class="text-left px-4 py-3 bg-slate-900/30 hover:bg-slate-800/40 border border-slate-900 hover:border-slate-800 rounded-xl transition-all duration-200 text-xs flex items-start gap-3 group">
+                        <span class="p-1 rounded-lg bg-amber-500/10 text-amber-400 group-hover:bg-amber-500/20 transition-colors">☕</span>
+                        <div>
+                            <p class="font-bold text-slate-300">Café de Especialidade</p>
+                            <p class="text-slate-500 mt-0.5 text-[10px]">Cálculos de renda, licenças e custos de Lisboa.</p>
+                        </div>
+                    </button>
+                    <button onclick="fillSearch('Abrir um alojamento local ecológico na Costa Vicentina')" class="text-left px-4 py-3 bg-slate-900/30 hover:bg-slate-800/40 border border-slate-900 hover:border-slate-800 rounded-xl transition-all duration-200 text-xs flex items-start gap-3 group">
+                        <span class="p-1 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20 transition-colors">🏡</span>
+                        <div>
+                            <p class="font-bold text-slate-300">Alojamento Local Ecocamping</p>
+                            <p class="text-slate-500 mt-0.5 text-[10px]">Licenciamento de turismo e marcas de sustentabilidade.</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
 
-<section id="themeSection" class="card hidden">
-  <h2 id="themeTitle">🎡 Tema da ronda</h2>
-  <div class="theme-box">
-    <p>A tua mentira tem de envolver:</p>
-    <div id="themeText" class="theme-big">---</div>
-  </div>
-  <button onclick="startCountdown()">🔥 Começar Duelo</button>
-</section>
+        <!-- STEP 2: Loading State -->
+        <div id="loading-state" class="hidden w-full max-w-md mx-auto text-center py-20 transition-all duration-500">
+            <div class="relative w-24 h-24 mx-auto mb-8">
+                <div class="absolute inset-0 bg-indigo-500/20 rounded-full blur-xl animate-pulse"></div>
+                <div class="absolute inset-0 border-4 border-indigo-500/10 border-t-indigo-500 rounded-full animate-spin"></div>
+                <div class="absolute inset-2 border-4 border-transparent border-t-emerald-400 border-b-emerald-400 rounded-full animate-spin [animation-duration:1.5s] [animation-direction:reverse]"></div>
+                <div class="absolute inset-4 bg-slate-950 rounded-full flex items-center justify-center border border-slate-800">
+                    <svg class="w-6 h-6 text-indigo-400 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">A Executar Pesquisa Real</h3>
+            <p id="loading-text" class="text-sm text-slate-400">A consultar portais de dados e regulamentos vigentes em 2026...</p>
+            
+            <div class="mt-8 bg-slate-950/80 border border-slate-850 rounded-xl p-4 text-left text-xs font-mono text-slate-500 space-y-2">
+                <div id="load-step-1" class="flex items-center gap-2"><span class="text-indigo-500 animate-pulse">●</span> Ativar motor de busca Web Grounding...</div>
+                <div id="load-step-2" class="flex items-center gap-2 opacity-40"><span>■</span> Analisar páginas oficiais e custos locais...</div>
+                <div id="load-step-3" class="flex items-center gap-2 opacity-40"><span>■</span> Estruturar modelo de dados em JSON...</div>
+            </div>
+        </div>
 
-<section id="duel" class="card hidden">
-  <h2 id="duelTitle">Duelo</h2>
-  <p class="timer">⏳ <span id="time">60</span>s</p>
+        <!-- STEP 3: Results Dashboard -->
+        <div id="results-dashboard" class="hidden w-full transition-all duration-500 opacity-0 transform translate-y-4">
+            
+            <!-- Dashboard Header -->
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-6 mb-8 border-b border-slate-800/80">
+                <div class="flex items-center gap-4">
+                    <button onclick="backToSearch()" class="p-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-xl text-slate-400 hover:text-white transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </button>
+                    <div>
+                        <div class="flex items-center gap-2.5">
+                            <span class="px-2.5 py-0.5 bg-indigo-500/10 border border-indigo-500/30 rounded text-[10px] font-bold text-indigo-400 uppercase tracking-wide">Plano Gerado Em Modo Real</span>
+                            <span class="text-slate-700">•</span>
+                            <span class="flex items-center gap-1 text-[11px] text-emerald-400 font-medium">
+                                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                                Grounded Web Search
+                            </span>
+                        </div>
+                        <h2 id="result-query-title" class="text-xl sm:text-2xl font-black text-white mt-1">Quero abrir um café em Lisboa</h2>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2.5 w-full lg:w-auto">
+                    <button onclick="copyToClipboard()" class="flex-grow lg:flex-grow-0 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                        <span>Copiar Estratégia</span>
+                    </button>
+                    <button onclick="backToSearch()" class="flex-grow lg:flex-grow-0 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                        Nova Pesquisa
+                    </button>
+                </div>
+            </div>
 
-  <h3>Tema obrigatório:</h3>
-  <div class="theme-box" id="duelTheme"></div>
+            <!-- Dashboard Layout Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Left Column: Tabs Navigation -->
+                <div class="lg:col-span-3 flex lg:flex-col overflow-x-auto lg:overflow-x-visible gap-2 pb-4 lg:pb-0 border-b lg:border-none border-slate-800 custom-scrollbar">
+                    <button onclick="switchTab('tab-summary')" id="btn-tab-summary" class="tab-btn w-full px-4 py-3.5 bg-indigo-600/10 border-l-2 border-indigo-500 text-indigo-300 rounded-r-lg text-left text-xs font-bold flex items-center gap-3 transition-all flex-shrink-0">
+                        <span class="text-base">📊</span>
+                        <span>Sumário Executivo</span>
+                    </button>
+                    <button onclick="switchTab('tab-business')" id="btn-tab-business" class="tab-btn w-full px-4 py-3.5 bg-transparent hover:bg-slate-900 border-l-2 border-transparent hover:border-slate-700 text-slate-400 hover:text-slate-200 rounded-r-lg text-left text-xs font-bold flex items-center gap-3 transition-all flex-shrink-0">
+                        <span class="text-base">📋</span>
+                        <span>Plano de Negócio</span>
+                    </button>
+                    <button onclick="switchTab('tab-costs')" id="btn-tab-costs" class="tab-btn w-full px-4 py-3.5 bg-transparent hover:bg-slate-900 border-l-2 border-transparent hover:border-slate-700 text-slate-400 hover:text-slate-200 rounded-r-lg text-left text-xs font-bold flex items-center gap-3 transition-all flex-shrink-0">
+                        <span class="text-base">💰</span>
+                        <span>Custos & Finanças (Live)</span>
+                    </button>
+                    <button onclick="switchTab('tab-licenses')" id="btn-tab-licenses" class="tab-btn w-full px-4 py-3.5 bg-transparent hover:bg-slate-900 border-l-2 border-transparent hover:border-slate-700 text-slate-400 hover:text-slate-200 rounded-r-lg text-left text-xs font-bold flex items-center gap-3 transition-all flex-shrink-0">
+                        <span class="text-base">⚖️</span>
+                        <span>Regulação & Licenciamento</span>
+                    </button>
+                    <button onclick="switchTab('tab-suppliers')" id="btn-tab-suppliers" class="tab-btn w-full px-4 py-3.5 bg-transparent hover:bg-slate-900 border-l-2 border-transparent hover:border-slate-700 text-slate-400 hover:text-slate-200 rounded-r-lg text-left text-xs font-bold flex items-center gap-3 transition-all flex-shrink-0">
+                        <span class="text-base">🤝</span>
+                        <span>Rede de Fornecedores</span>
+                    </button>
+                    <button onclick="switchTab('tab-marketing')" id="btn-tab-marketing" class="tab-btn w-full px-4 py-3.5 bg-transparent hover:bg-slate-900 border-l-2 border-transparent hover:border-slate-700 text-slate-400 hover:text-slate-200 rounded-r-lg text-left text-xs font-bold flex items-center gap-3 transition-all flex-shrink-0">
+                        <span class="text-base">📣</span>
+                        <span>Marketing & Atração</span>
+                    </button>
+                    <!-- Real-Time Sources Tab -->
+                    <button onclick="switchTab('tab-sources')" id="btn-tab-sources" class="tab-btn w-full px-4 py-3.5 bg-transparent hover:bg-slate-900 border-l-2 border-transparent hover:border-slate-700 text-emerald-400/80 hover:text-emerald-300 rounded-r-lg text-left text-xs font-bold flex items-center gap-3 transition-all flex-shrink-0 border-r border-emerald-500/10">
+                        <span class="text-base">🌐</span>
+                        <span>Fontes Utilizadas (<span id="source-count">0</span>)</span>
+                    </button>
+                </div>
 
-  <h3>Mentira do adversário:</h3>
-  <div class="lie-box" id="enemyLie"></div>
+                <!-- Right Column: Interactive panels -->
+                <div class="lg:col-span-9 bg-slate-900/40 border border-slate-800 rounded-2xl p-6 md:p-8 backdrop-blur-md">
+                    
+                    <!-- PANEL: Executive Summary -->
+                    <div id="tab-summary-content" class="tab-content block space-y-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-extrabold text-white">Análise Preliminar e Diagnóstico</h3>
+                            <span class="px-2 py-1 rounded bg-indigo-500/10 text-[10px] text-indigo-400 font-bold border border-indigo-500/20">Avaliador Comercial</span>
+                        </div>
+                        <p id="summary-text" class="text-slate-300 text-sm leading-relaxed"></p>
+                        
+                        <div class="p-4 bg-slate-950/60 border border-slate-800 rounded-xl flex items-start gap-3">
+                            <span class="text-lg">💡</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-200">Conselho Estratégico do Motor de Busca</h4>
+                                <p class="text-slate-400 text-xs mt-1 leading-relaxed">
+                                    Esta estratégia de negócios foi construída através da mineração de dados em tempo real nas últimas referências públicas disponíveis. Recomenda-se aferir as rendas exatas do local de exploração para afinar as simulações do seu break-even point.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
-  <h3>A tua mentira:</h3>
-  <textarea id="playerLie" placeholder="Escreve aqui a mentira mais descarada..."></textarea>
+                    <!-- PANEL: Business Plan -->
+                    <div id="tab-business-content" class="tab-content hidden space-y-6">
+                        <h3 class="text-lg font-extrabold text-white">Estudo do Modelo de Operação</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Proposta de Valor Primária</h4>
+                                <div id="bp-value-prop" class="bg-slate-950/40 border border-slate-850 p-4 rounded-xl text-xs text-slate-300 leading-relaxed"></div>
+                            </div>
 
-  <button onclick="judgeLie()">🤖 Enviar Mentira</button>
-</section>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nicho de Mercado e Segmentação</h4>
+                                <div id="bp-target" class="bg-slate-950/40 border border-slate-850 p-4 rounded-xl text-xs text-slate-300 leading-relaxed"></div>
+                            </div>
 
-<section id="result" class="card hidden">
-  <h2>Resultado Final</h2>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Vantagem Competitiva Relevante</h4>
+                                <div id="bp-differentiators" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                            </div>
+                        </div>
+                    </div>
 
-  <div class="score-grid">
-    <div class="score">Criatividade<br><strong id="criatividade">0</strong></div>
-    <div class="score">Absurdo<br><strong id="absurdo">0</strong></div>
-    <div class="score">Humor<br><strong id="humor">0</strong></div>
-    <div class="score">Descaramento<br><strong id="descaramento">0</strong></div>
-    <div class="score">Bónus Tema<br><strong id="bonus">0</strong></div>
-  </div>
+                    <!-- PANEL: Interactive Costs & Budget -->
+                    <div id="tab-costs-content" class="tab-content hidden space-y-6">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div>
+                                <h3 class="text-lg font-extrabold text-white">Simulador de Custos em Tempo Real</h3>
+                                <p class="text-slate-400 text-xs">Os valores foram sugeridos com base em dados correntes do mercado local.</p>
+                            </div>
+                            <div class="bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-xl text-right">
+                                <span class="block text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Investimento Inicial</span>
+                                <span id="live-total" class="text-lg font-extrabold text-white">0,00 €</span>
+                            </div>
+                        </div>
 
-  <h2>🏆 Total: <span id="total">0</span></h2>
-  <p id="comment"></p>
-  <p><strong id="rewardText"></strong></p>
+                        <!-- One Time Costs -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Custos Únicos (Configuração e Instalação)</h4>
+                                <button onclick="addNewCostRow('startup')" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">+ Adicionar Item</button>
+                            </div>
+                            <div class="overflow-hidden bg-slate-950/40 border border-slate-850 rounded-xl">
+                                <table class="w-full text-left text-xs text-slate-300">
+                                    <thead class="bg-slate-900/60 border-b border-slate-800 text-slate-400 font-bold">
+                                        <tr>
+                                            <th class="p-3">Item do Investimento</th>
+                                            <th class="p-3 w-36 text-right">Custo Estimado</th>
+                                            <th class="p-3 w-16 text-center">Remover</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="startup-costs-body" class="divide-y divide-slate-800/40"></tbody>
+                                </table>
+                            </div>
+                        </div>
 
-  <div id="memeCard">
-    <h2>🎭 Mentirógrafo™</h2>
-    <p><strong>Tema:</strong> <span id="memeTheme"></span></p>
-    <p id="memeText"></p>
-    <p id="memeScore"></p>
-  </div>
+                        <!-- Monthly Costs -->
+                        <div class="space-y-3 pt-4">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Despesas Operacionais Recorrentes (/mês)</h4>
+                                <button onclick="addNewCostRow('monthly')" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">+ Adicionar Item</button>
+                            </div>
+                            <div class="overflow-hidden bg-slate-950/40 border border-slate-850 rounded-xl">
+                                <table class="w-full text-left text-xs text-slate-300">
+                                    <tbody id="monthly-costs-body" class="divide-y divide-slate-800/40"></tbody>
+                                </table>
+                            </div>
+                            <div class="flex justify-end text-xs text-slate-400 font-medium">
+                                Custos Fixos Mensais: <span id="live-monthly-total" class="text-slate-200 font-bold ml-1.5">0,00 €</span>
+                            </div>
+                        </div>
+                    </div>
 
-  <button id="primaryResultButton" onclick="shareMeme()">📱 Partilhar como Meme</button>
-  <button onclick="restart()">🔁 Jogar Outra Vez</button>
-</section>
+                    <!-- PANEL: Legal & Regulation -->
+                    <div id="tab-licenses-content" class="tab-content hidden space-y-6">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-white">Passos Legais e Burocracia Obrigatória</h3>
+                            <p class="text-slate-400 text-xs">Acompanhe as metas regulatórias exigidas pelos portais governamentais portugueses.</p>
+                        </div>
 
-<section id="arenaFinal" class="card hidden">
-  <h2>🌍 Arena Global Finalizada</h2>
-  <h1 id="arenaTitle"></h1>
-  <p>Pontuação total em 10 rondas:</p>
-  <h2>🏆 <span id="arenaFinalScore">0</span> pts</h2>
-  <button onclick="restart()">🔁 Jogar Novamente</button>
-</section>
+                        <!-- Progress indicator -->
+                        <div class="p-4 bg-slate-950/60 border border-slate-800 rounded-xl">
+                            <div class="flex justify-between items-center mb-1.5 text-xs text-slate-300 font-bold">
+                                <span>Progresso da Legalização</span>
+                                <span id="license-percentage">0%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden">
+                                <div id="license-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                        </div>
 
-<section class="card">
-  <h2>🏆 Conquistas</h2>
-  <div id="achievementsBox"></div>
-</section>
+                        <!-- Tasks Checklist -->
+                        <div id="license-checklist-container" class="space-y-3"></div>
+                    </div>
 
-<section class="card">
-  <h2>🏆 Ranking Local</h2>
-  <div id="ranking"></div>
-</section>
+                    <!-- PANEL: Suppliers & Logistics -->
+                    <div id="tab-suppliers-content" class="tab-content hidden space-y-6">
+                        <h3 class="text-lg font-extrabold text-white">Cadeia de Fornecimento Recomendada</h3>
+                        <div id="suppliers-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    </div>
 
-</main>
-<footer>© 2026 Mentirógrafo™ Portugal — Humor, absurdo e descaramento.</footer>
+                    <!-- PANEL: Marketing Strategy -->
+                    <div id="tab-marketing-content" class="tab-content hidden space-y-6">
+                        <h3 class="text-lg font-extrabold text-white">Plano de Entrada no Mercado</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-5 bg-slate-950/60 border border-slate-800 rounded-xl">
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Canais de Lançamento de Alta Prioridade</h4>
+                                <div id="mkt-channels" class="flex flex-wrap gap-2 pt-2"></div>
+                            </div>
+                            <div class="p-5 bg-slate-950/60 border border-slate-800 rounded-xl">
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Modelo de Posicionamento e Storytelling</h4>
+                                <p id="mkt-positioning" class="text-xs text-slate-300 leading-relaxed"></p>
+                            </div>
+                        </div>
 
-<script>
-let selectedName="", selectedEmoji="", currentTheme="";
-let timer, timeLeft=60, finalTotal=0, finalLie="", lastBonus=0;
-let arenaMode=false, arenaRound=1, arenaTotal=0;
-const maxArenaRounds=10;
+                        <div class="p-5 bg-slate-950/40 border border-slate-800 rounded-xl">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Estratégia de Pré-Abertura (Soft Launch)</h4>
+                            <p id="mkt-launch-plan" class="text-xs text-slate-300 leading-relaxed"></p>
+                        </div>
+                    </div>
 
-const profileKey="mentirografoProfileV5";
-const rankingKey="mentirografoRankingV5";
+                    <!-- PANEL: Real-time Grounding Sources -->
+                    <div id="tab-sources-content" class="tab-content hidden space-y-6">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-emerald-400 flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
+                                Fontes em Tempo Real do Motor de Busca
+                            </h3>
+                            <p class="text-slate-400 text-xs">Os links e artigos oficiais que o modelo de IA leu em tempo real para estruturar esta estratégia.</p>
+                        </div>
 
-let profile={
-  name:"---",
-  xp:0,
-  coins:0,
-  achievements:[]
-};
+                        <div id="sources-list-container" class="space-y-3">
+                            <!-- Populated with real URIs from Google Search Grounding -->
+                        </div>
+                    </div>
 
-const achievements=[
-  {id:"first_lie",name:"🏆 Primeira Mentira",desc:"Envia a tua primeira mentira."},
-  {id:"score_300",name:"🔥 300+ Pontos",desc:"Consegue 300 pontos numa ronda."},
-  {id:"score_400",name:"👑 400+ Pontos",desc:"Consegue 400 pontos numa ronda."},
-  {id:"arena_complete",name:"🌍 Arena Global",desc:"Completa as 10 rondas."},
-  {id:"theme_bonus",name:"🎡 Bónus Máximo",desc:"Atinge 50 pontos de bónus de tema."}
-];
+                </div>
+            </div>
+        </div>
+    </main>
 
-const themes=["Futebol","Portugal","Trabalho","Casamento","Escola","Tecnologia","Dinossauros","Espaço","Família","Praia","Restaurante","Política","Bancos","Padaria","Tasca","Ginásio","Vizinhos","Namoro"];
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-slate-900 bg-slate-950/40 py-6 text-center">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <p>© 2026 Beyond Search. Grounded Real-Time Engine Demo.</p>
+            <div class="flex items-center gap-4">
+                <a href="#" class="hover:text-indigo-400 transition-all">Segurança de Dados</a>
+                <span>•</span>
+                <p>Grounding Engine: <span class="text-emerald-500 font-bold">Google Search Integration</span></p>
+            </div>
+        </div>
+    </footer>
 
-const lies={
-"Dona Alzira":["No meu tempo os pombos entregavam emails com selo.","A minha televisão funcionava a carvão.","O inverno durava 14 meses e ainda sobrava frio.","Antigamente os frigoríficos cantavam fado quando estavam vazios."],
-"Zé Pescador":["Pesquei uma sardinha que sabia declarar IRS.","Uma vez apanhei um polvo que jogava dominó.","O mar ligou-me a pedir sal emprestado.","Pesquei um bacalhau que vinha com fatura e garantia."],
-"Toni Empreendedor":["Vendi NFTs a extraterrestres reformados.","Criei uma startup que alugava sombras no verão.","Faturei milhões a vender Wi-Fi para caracóis.","Abri uma empresa de consultoria para plantas indecisas."],
-"Dr. Antunes":["Curei preguiça com chá de impressora.","Operei um relógio que tinha ansiedade.","Receitei vitamina C a um computador gripado.","Fiz fisioterapia a uma cadeira que coxeava."],
-"Professor Pardal":["Inventei uma máquina que transforma filas de espera em bolachas.","Criei um capacete que traduz pensamentos de batatas.","Descobri que os semáforos ficam vermelhos por vergonha.","Ensinei uma torradeira a fazer reuniões por Zoom."],
-"Padre Toninho":["Fiz um milagre e multipliquei pastéis de nata numa rotunda.","Abençoei um micro-ondas e ele passou a aquecer sentimentos.","Uma vez confessei um robô que tinha pecado em binário.","Transformei água com gás em refrigerante sagrado."]
-};
-
-const comments=[
-"Esta mentira foi tão absurda que a realidade pediu baixa médica.",
-"Três fact-checkers desistiram depois de ler isto.",
-"Mentira de alto nível. O polígrafo explodiu.",
-"Isto não foi uma mentira. Foi património nacional da tanga.",
-"A física leu isto e foi tirar férias.",
-"Esta mentira devia ser ensinada nas escolas de descaramento."
-];
-
-function loadProfile(){
-  const saved=localStorage.getItem(profileKey);
-  if(saved) profile=JSON.parse(saved);
-  if(profile.name && profile.name !== "---") document.getElementById("playerName").value=profile.name;
-  updateProfileUI();
-  renderAchievements();
-}
-
-function saveProfile(){
-  localStorage.setItem(profileKey,JSON.stringify(profile));
-  updateProfileUI();
-  renderAchievements();
-}
-
-function syncPlayerName(){
-  const name=document.getElementById("playerName").value.trim();
-  profile.name=name || "---";
-  saveProfile();
-}
-
-function getLevelData(xp){
-  if(xp>=5000)return{level:5,title:"Lenda Nacional da Tanga"};
-  if(xp>=3000)return{level:4,title:"Mestre da Mentira"};
-  if(xp>=1500)return{level:3,title:"Profissional do Descaramento"};
-  if(xp>=500)return{level:2,title:"Mentiroso Promissor"};
-  return{level:1,title:"Aprendiz da Tanga"};
-}
-
-function updateProfileUI(){
-  const level=getLevelData(profile.xp);
-  document.getElementById("profileName").innerText=profile.name || "---";
-  document.getElementById("profileLevel").innerText=level.level;
-  document.getElementById("profileTitle").innerText=level.title;
-  document.getElementById("profileXP").innerText=profile.xp;
-  document.getElementById("profileCoins").innerText=profile.coins;
-  document.getElementById("profileAchievements").innerText=profile.achievements.length+"/"+achievements.length;
-}
-
-function unlockAchievement(id){
-  if(!profile.achievements.includes(id)){
-    profile.achievements.push(id);
-  }
-}
-
-function renderAchievements(){
-  const box=document.getElementById("achievementsBox");
-  box.innerHTML=achievements.map(a=>{
-    const ok=profile.achievements.includes(a.id);
-    return `<div class="achievement ${ok?'unlocked':'locked'}"><span>${a.name}<br><small>${a.desc}</small></span><strong>${ok?'✅':'🔒'}</strong></div>`;
-  }).join("");
-}
-
-function playSound(type){
-  const audio=new (window.AudioContext||window.webkitAudioContext)();
-  const osc=audio.createOscillator();
-  const gain=audio.createGain();
-  osc.connect(gain); gain.connect(audio.destination);
-  osc.frequency.value=type==="win"?980:type==="fail"?180:type==="start"?760:500;
-  gain.gain.value=.08;
-  osc.start();
-  setTimeout(()=>{osc.stop();audio.close()},150);
-}
-
-function selectCharacter(element,name,emoji){
-  playSound("click");
-  selectedName=name; selectedEmoji=emoji;
-  document.querySelectorAll(".character").forEach(c=>c.classList.remove("active"));
-  element.classList.add("active");
-}
-
-function validateStart(){
-  if(!document.getElementById("playerName").value.trim()){alert("Escreve primeiro o teu nome.");return false}
-  if(!selectedName){alert("Escolhe primeiro um adversário.");return false}
-  syncPlayerName();
-  return true;
-}
-
-function startNormalGame(){
-  if(!validateStart())return;
-  arenaMode=false;
-  spinTheme();
-}
-
-function startArena(){
-  if(!validateStart())return;
-  arenaMode=true;
-  arenaRound=1;
-  arenaTotal=0;
-  spinTheme();
-}
-
-function spinTheme(){
-  playSound("start");
-  document.getElementById("home").classList.add("hidden");
-  document.getElementById("themeSection").classList.remove("hidden");
-  document.getElementById("themeTitle").innerText=arenaMode?`🌍 Arena Global — Ronda ${arenaRound}/${maxArenaRounds}`:"🎡 Tema da ronda";
-
-  let spins=0;
-  const themeText=document.getElementById("themeText");
-  const interval=setInterval(()=>{
-    currentTheme=themes[Math.floor(Math.random()*themes.length)];
-    themeText.innerText=currentTheme;
-    spins++;
-    if(spins>=14){
-      clearInterval(interval);
-      currentTheme=themes[Math.floor(Math.random()*themes.length)];
-      themeText.innerText=currentTheme;
-      playSound("win");
-    }
-  },90);
-}
-
-function startCountdown(){
-  playSound("start");
-  const box=document.createElement("div");
-  box.id="countdown";
-  document.body.appendChild(box);
-  let count=3;
-  box.innerText=count;
-  const interval=setInterval(()=>{
-    count--;
-    if(count>0){box.innerText=count;playSound("click")}
-    else if(count===0){box.innerText="MENTE!";playSound("start")}
-    else{clearInterval(interval);box.remove();beginDuel()}
-  },1000);
-}
-
-function beginDuel(){
-  document.getElementById("themeSection").classList.add("hidden");
-  document.getElementById("duel").classList.remove("hidden");
-  document.getElementById("duelTitle").innerText=arenaMode?`🌍 Arena Global — Ronda ${arenaRound}/${maxArenaRounds}`:`${selectedEmoji} Duelo contra ${selectedName}`;
-  document.getElementById("duelTheme").innerText=currentTheme;
-  const enemyOptions=lies[selectedName];
-  document.getElementById("enemyLie").innerText=enemyOptions[Math.floor(Math.random()*enemyOptions.length)];
-  timeLeft=60;
-  document.getElementById("time").innerText=timeLeft;
-  timer=setInterval(()=>{
-    timeLeft--;
-    document.getElementById("time").innerText=timeLeft;
-    if(timeLeft<=0){clearInterval(timer);judgeLie()}
-  },1000);
-}
-
-function judgeLie(){
-  clearInterval(timer);
-  const text=document.getElementById("playerLie").value.trim();
-  if(!text){alert("Escreve uma mentira primeiro.");return}
-
-  finalLie=text;
-  const criatividade=randomScore(text.length);
-  const absurdo=randomScore(text.length+8);
-  const humor=randomScore(text.length+4);
-  const descaramento=randomScore(text.length+12);
-  const bonus=calculateThemeBonus(text,currentTheme);
-  lastBonus=bonus;
-
-  finalTotal=criatividade+absurdo+humor+descaramento+bonus;
-  if(arenaMode) arenaTotal+=finalTotal;
-
-  unlockAchievement("first_lie");
-  if(finalTotal>=300)unlockAchievement("score_300");
-  if(finalTotal>=400)unlockAchievement("score_400");
-  if(bonus>=50)unlockAchievement("theme_bonus");
-
-  document.getElementById("duel").classList.add("hidden");
-  document.getElementById("result").classList.remove("hidden");
-
-  document.getElementById("criatividade").innerText=criatividade;
-  document.getElementById("absurdo").innerText=absurdo;
-  document.getElementById("humor").innerText=humor;
-  document.getElementById("descaramento").innerText=descaramento;
-  document.getElementById("bonus").innerText=bonus;
-  document.getElementById("total").innerText=finalTotal;
-
-  let comment=comments[Math.floor(Math.random()*comments.length)];
-  if(bonus>=40) comment+=" Bónus alto: usaste o tema como mestre da tanga.";
-  if(bonus===0) comment+=" Ignoraste o tema e isso custou pontos.";
-  document.getElementById("comment").innerText=comment;
-
-  document.getElementById("memeTheme").innerText=currentTheme;
-  document.getElementById("memeText").innerText="“"+finalLie+"”";
-  document.getElementById("memeScore").innerText="Pontuação: "+finalTotal+" pts";
-
-  const btn=document.getElementById("primaryResultButton");
-
-  if(arenaMode){
-    document.getElementById("rewardText").innerText=`Ronda ${arenaRound}/${maxArenaRounds} · Total Arena: ${arenaTotal} pts`;
-    btn.innerText=arenaRound>=maxArenaRounds?"🏁 Ver Resultado Final":"➡️ Próxima Ronda";
-    btn.onclick=arenaRound>=maxArenaRounds?showArenaFinal:nextArenaRound;
-  }else{
-    const xp=finalTotal>=340?150:finalTotal>=300?100:20;
-    const coins=finalTotal>=340?80:finalTotal>=300?50:10;
-    profile.xp+=xp;
-    profile.coins+=coins;
-    document.getElementById("rewardText").innerText=`+${xp} XP · +${coins} Moedas`;
-    btn.innerText="📱 Partilhar como Meme";
-    btn.onclick=shareMeme;
-    saveRanking(finalTotal,"Duelo");
-    saveProfile();
-    loadRanking();
-  }
-
-  playSound(finalTotal>=300?"win":"fail");
-}
-
-function nextArenaRound(){
-  arenaRound++;
-  document.getElementById("result").classList.add("hidden");
-  document.getElementById("playerLie").value="";
-  spinTheme();
-}
-
-function showArenaFinal(){
-  document.getElementById("result").classList.add("hidden");
-  document.getElementById("arenaFinal").classList.remove("hidden");
-  let title=arenaTotal>=3500?"👑 Campeão Nacional da Tanga":arenaTotal>=2800?"🔥 Mestre do Descaramento":arenaTotal>=2000?"🎭 Mentirógrafo Promissor":"🥔 Aprendiz da Mentira";
-  document.getElementById("arenaTitle").innerText=title;
-  document.getElementById("arenaFinalScore").innerText=arenaTotal;
-  profile.xp+=500;
-  profile.coins+=250;
-  unlockAchievement("arena_complete");
-  saveRanking(arenaTotal,"Arena Global");
-  saveProfile();
-  loadRanking();
-}
-
-function calculateThemeBonus(text,theme){
-  const lower=text.toLowerCase();
-  const t=theme.toLowerCase();
-  const keywords={
-    "futebol":["bola","golo","ronaldo","benfica","sporting","porto","árbitro","estádio"],
-    "portugal":["portugal","lisboa","porto","fado","pastel","sardinha","bacalhau"],
-    "trabalho":["chefe","emprego","reunião","salário","empresa","trabalho"],
-    "casamento":["noiva","noivo","aliança","casamento","lua de mel"],
-    "escola":["professor","teste","aluno","escola","caderno"],
-    "tecnologia":["wifi","internet","robô","computador","app","telemóvel"],
-    "dinossauros":["dinossauro","t-rex","jurássico","fóssil"],
-    "espaço":["lua","marte","nasa","astronauta","foguetão","planeta"],
-    "família":["mãe","pai","avó","avô","primo","família"],
-    "praia":["areia","mar","sol","toalha","praia"],
-    "restaurante":["garçom","comida","menu","restaurante","sopa"],
-    "política":["presidente","ministro","parlamento","voto","política"],
-    "bancos":["banco","dinheiro","empréstimo","cartão","juros"],
-    "padaria":["pão","croissant","forno","padaria","bolo"],
-    "tasca":["tasca","vinho","petisco","balcão","bifana"],
-    "ginásio":["ginásio","halter","músculo","treino","proteína"],
-    "vizinhos":["vizinho","prédio","condomínio","barulho","escada"],
-    "namoro":["amor","namoro","beijo","ex","coração"]
-  };
-  let bonus=0;
-  if(lower.includes(t)) bonus+=40;
-  (keywords[t]||[]).forEach(word=>{if(lower.includes(word)) bonus+=10});
-  return Math.min(bonus,50);
-}
-
-function randomScore(seed){
-  let min=50;
-  if(seed>35)min=70;
-  if(seed>75)min=80;
-  return Math.floor(Math.random()*(100-min+1))+min;
-}
-
-function saveRanking(score,mode){
-  const player=document.getElementById("playerName").value.trim()||"Jogador";
-  const ranking=JSON.parse(localStorage.getItem(rankingKey))||[];
-  ranking.push({name:player,score,theme:currentTheme,mode});
-  ranking.sort((a,b)=>b.score-a.score);
-  localStorage.setItem(rankingKey,JSON.stringify(ranking.slice(0,10)));
-}
-
-function loadRanking(){
-  const ranking=JSON.parse(localStorage.getItem(rankingKey))||[];
-  const box=document.getElementById("ranking");
-  if(ranking.length===0){box.innerHTML="<p>Ainda sem pontuações.</p>";return}
-  box.innerHTML=ranking.map((item,index)=>`
-    <div class="ranking-item">
-      <span>${index+1}. ${item.name} <small>(${item.mode})</small></span>
-      <strong>${item.score} pts</strong>
+    <!-- Custom Toast Notification -->
+    <div id="custom-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 ease-out max-w-sm w-full bg-slate-900/95 border border-slate-800 rounded-2xl p-4 flex items-start gap-3 shadow-2xl backdrop-blur-md">
+        <div id="toast-icon" class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+        <div class="flex-grow">
+            <h4 id="toast-title" class="text-xs font-bold text-white">Notificação</h4>
+            <p id="toast-desc" class="text-[11px] text-slate-400 mt-0.5">Operação executada com sucesso.</p>
+        </div>
+        <button onclick="hideToast()" class="text-slate-500 hover:text-white transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
     </div>
-  `).join("");
-}
 
-function shareMeme(){
-  const text="🎭 Mentirógrafo™\n\nTema: "+currentTheme+"\n\nA minha mentira:\n“"+finalLie+"”\n\nPontuação: "+finalTotal+" pts";
-  if(navigator.share){navigator.share({title:"Mentirógrafo™",text})}
-  else{navigator.clipboard.writeText(text);alert("Meme copiado para partilhares.")}
-}
+    <!-- Core Engine Scripts -->
+    <script>
+        const apiKey = ""; // Populated automatically at runtime
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'beyond-search-grounded';
 
-function restart(){
-  clearInterval(timer);
-  arenaMode=false;
-  arenaRound=1;
-  arenaTotal=0;
-  currentTheme="";
-  document.getElementById("home").classList.remove("hidden");
-  document.getElementById("themeSection").classList.add("hidden");
-  document.getElementById("duel").classList.add("hidden");
-  document.getElementById("result").classList.add("hidden");
-  document.getElementById("arenaFinal").classList.add("hidden");
-  document.getElementById("playerLie").value="";
-  document.getElementById("themeText").innerText="---";
-  updateProfileUI();
-}
+        let lastGroundedResponse = null;
+        let activeQuery = "";
+        let activeCosts = { oneTime: [], monthly: [] };
+        let checkListData = [];
 
-let deferredPrompt=null;
+        // Elements
+        const searchLanding = document.getElementById('search-landing');
+        const loadingState = document.getElementById('loading-state');
+        const resultsDashboard = document.getElementById('results-dashboard');
+        const searchInput = document.getElementById('search-input');
+        const searchForm = document.getElementById('search-form');
+        const loadingText = document.getElementById('loading-text');
 
-window.addEventListener("beforeinstallprompt",(e)=>{
-  e.preventDefault();
-  deferredPrompt=e;
-  const btn=document.getElementById("installBtn");
-  if(btn) btn.classList.remove("hidden");
-});
+        const stepTexts = [
+            "A iniciar motor de pesquisa do futuro...",
+            "A contactar portais comerciais em Portugal...",
+            "A obter dados financeiros e taxas municipais de 2026...",
+            "A encontrar fornecedores industriais e agrícolas locais...",
+            "A formatar plano estruturado final..."
+        ];
 
-async function installApp(){
-  if(!deferredPrompt){
-    alert("A instalação ainda não está disponível neste navegador. Publica online com HTTPS para ativar.");
-    return;
-  }
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt=null;
-  const btn=document.getElementById("installBtn");
-  if(btn) btn.classList.add("hidden");
-}
+        function fillSearch(text) {
+            searchInput.value = text;
+            searchInput.focus();
+        }
 
-if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
-  });
-}
+        // Toast utils
+        function showToast(title, message, isError = false) {
+            const toast = document.getElementById('custom-toast');
+            const tTitle = document.getElementById('toast-title');
+            const tDesc = document.getElementById('toast-desc');
+            const tIcon = document.getElementById('toast-icon');
 
-loadProfile();
-loadRanking();
-</script>
+            tTitle.innerText = title;
+            tDesc.innerText = message;
+
+            if (isError) {
+                tIcon.className = "p-1.5 rounded-lg bg-rose-500/10 text-rose-400";
+                tIcon.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                `;
+            } else {
+                tIcon.className = "p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400";
+                tIcon.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                `;
+            }
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => { hideToast(); }, 5000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('custom-toast');
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-24', 'opacity-0');
+        }
+
+        // Search Action
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (!query) return;
+
+            activeQuery = query;
+            document.getElementById('result-query-title').innerText = query;
+
+            // Transition: search to loading
+            searchLanding.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+
+            let rotation = 0;
+            const logStep1 = document.getElementById('load-step-1');
+            const logStep2 = document.getElementById('load-step-2');
+            const logStep3 = document.getElementById('load-step-3');
+
+            const textInterval = setInterval(() => {
+                loadingText.innerText = stepTexts[rotation % stepTexts.length];
+                
+                if (rotation === 1) {
+                    logStep1.innerHTML = `<span class="text-emerald-500">✔</span> Motor de busca Web Grounding conectado`;
+                    logStep1.classList.remove('opacity-40');
+                    logStep2.classList.remove('opacity-40');
+                    logStep2.innerHTML = `<span class="text-indigo-500 animate-pulse">●</span> A minar portais nacionais para custos e licenças...`;
+                } else if (rotation === 3) {
+                    logStep2.innerHTML = `<span class="text-emerald-500">✔</span> Portais analisados (Preços de rendas e taxas locais obtidos)`;
+                    logStep3.classList.remove('opacity-40');
+                    logStep3.innerHTML = `<span class="text-indigo-500 animate-pulse">●</span> A estruturar a resposta do negócio de forma legível...`;
+                }
+
+                rotation++;
+            }, 2000);
+
+            try {
+                const response = await fetchGroundedData(query);
+                clearInterval(textInterval);
+
+                if (response && response.data) {
+                    lastGroundedResponse = response.data;
+                    populateDashboard(response.data, response.sources);
+
+                    // Transition: loading to dashboard
+                    loadingState.classList.add('hidden');
+                    resultsDashboard.classList.remove('hidden');
+                    setTimeout(() => {
+                        resultsDashboard.classList.add('opacity-100', 'translate-y-0');
+                        resultsDashboard.classList.remove('translate-y-4');
+                    }, 50);
+                } else {
+                    throw new Error("Não foi possível gerar dados de pesquisa em tempo real.");
+                }
+
+            } catch (err) {
+                clearInterval(textInterval);
+                loadingState.classList.add('hidden');
+                searchLanding.classList.remove('hidden');
+                showToast("Erro na Pesquisa", err.message || "Pedimos desculpa. Não conseguimos recolher a informação agora.", true);
+            }
+        });
+
+        // Gemini Web-Grounding Handler
+        async function fetchGroundedData(userQuery) {
+            const systemPrompt = `
+                És um assistente inteligente de pesquisa de mercado focado em Portugal (ano letivo 2026).
+                Qualquer que seja a intenção do utilizador (ex: "Quero abrir um café de especialidade em Lisboa"), deves fazer pesquisas web em tempo real sobre licenciamento oficial (Ex: Balcão Único Eletrónico, Mero Expediente Prévio, Segurança Alimentar ASAE, licenças de exploração), custos correntes reais de renda e materiais, cadeia de fornecedores portugueses viáveis e canais de atração de público mais eficientes no momento.
+
+                Gera uma resposta estritamente estruturada em JSON compatível com o seguinte esquema de dados:
+                {
+                  "executiveSummary": "Um sumário executivo detalhado sobre as conclusões da tua pesquisa web real para o local e tipo de negócio pretendido, justificando os riscos e viabilidade.",
+                  "businessPlan": {
+                    "valueProposition": "A proposta de valor principal do negócio baseado nas descobertas reais do mercado atual.",
+                    "targetAudience": "Identificação concisa dos perfis ideais de clientes no mercado português atual.",
+                    "keyDifferentiators": ["Diferenciador 1", "Diferenciador 2", "Diferenciador 3"]
+                  },
+                  "costs": {
+                    "oneTime": [
+                      {"item": "Nome do item de arranque", "cost": 5000}
+                    ],
+                    "monthly": [
+                      {"item": "Nome da despesa mensal", "cost": 1500}
+                    ]
+                  },
+                  "licenses": [
+                    {"name": "Nome exato da licença ou ato", "authority": "Entidade Reguladora Responsável", "description": "Breve descrição legal e prática do passo obrigatório."}
+                  ],
+                  "suppliers": [
+                    {"category": "Categoria do Fornecedor", "recommendations": "Nomes reais e contactos/indicações de fornecedores recomendados em Portugal.", "tips": "Dica estratégica de negociação ou operação com este fornecedor."}
+                  ],
+                  "marketing": {
+                    "channels": ["Canal 1", "Canal 2"],
+                    "strategy": "Modelo de posicionamento diferenciado detalhado.",
+                    "launchPlan": "O roteiro tático exato sugerido para a semana de abertura."
+                  }
+                }
+
+                Nota: A resposta deve ser exclusivamente em formato JSON válido e no idioma Português de Portugal (pt-PT). Fornece dados atualizados, práticos e factuais.
+            `;
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: `Pesquisa na web e fornece dados práticos para a seguinte intenção: "${userQuery}"` }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                tools: [{ "google_search": {} }], // ACTIVATE WEB SEARCH GROUNDING
+                generationConfig: {
+                    responseMimeType: "application/json"
+                }
+            };
+
+            let delay = 1000;
+            const maxRetries = 5;
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`API Error (${response.status})`);
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (!text) throw new Error("A resposta da inteligência artificial foi vazia.");
+
+                    // Parse Grounding Sources (Attributions)
+                    const attributions = result.candidates?.[0]?.groundingMetadata?.groundingAttributions || [];
+                    const sources = attributions.map(a => ({
+                        uri: a.web?.uri,
+                        title: a.web?.title
+                    })).filter(s => s.uri && s.title);
+
+                    return {
+                        data: JSON.parse(text),
+                        sources: sources
+                    };
+
+                } catch (error) {
+                    if (attempt === maxRetries - 1) throw error;
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        // Populate elements
+        function populateDashboard(data, sources) {
+            // Tab 1: Overview
+            document.getElementById('summary-text').innerText = data.executiveSummary || "Nenhum sumário foi estruturado para esta pesquisa.";
+
+            // Tab 2: Business Plan
+            document.getElementById('bp-value-prop').innerText = data.businessPlan?.valueProposition || "Sem proposta descrita.";
+            document.getElementById('bp-target').innerText = data.businessPlan?.targetAudience || "Público alvo não identificado.";
+            
+            const diffs = document.getElementById('bp-differentiators');
+            diffs.innerHTML = '';
+            (data.businessPlan?.keyDifferentiators || []).forEach(diff => {
+                const item = document.createElement('div');
+                item.className = "flex items-start gap-2 p-3 bg-slate-950/40 border border-slate-850 rounded-xl text-xs text-slate-300";
+                item.innerHTML = `
+                    <span class="text-emerald-400 font-bold">✓</span>
+                    <span>${diff}</span>
+                `;
+                diffs.appendChild(item);
+            });
+
+            // Tab 3: Interactive Budget
+            activeCosts = JSON.parse(JSON.stringify(data.costs || { oneTime: [], monthly: [] }));
+            renderCostsTable();
+
+            // Tab 4: Legal & Licenses Checklist
+            checkListData = (data.licenses || []).map(l => ({ ...l, checked: false }));
+            renderChecklist();
+
+            // Tab 5: Suppliers
+            const supps = document.getElementById('suppliers-container');
+            supps.innerHTML = '';
+            (data.suppliers || []).forEach(s => {
+                const card = document.createElement('div');
+                card.className = "p-5 bg-slate-950/50 border border-slate-850 rounded-xl space-y-3";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-[10px] text-indigo-400 font-bold uppercase tracking-wide">
+                            ${s.category}
+                        </span>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-200">${s.recommendations}</p>
+                    <div class="bg-indigo-950/10 rounded-lg p-3 border border-indigo-500/10 text-[11px] text-slate-400">
+                        <span class="font-bold text-indigo-300">Dica Útil:</span> ${s.tips}
+                    </div>
+                `;
+                supps.appendChild(card);
+            });
+
+            // Tab 6: Marketing
+            const mktChn = document.getElementById('mkt-channels');
+            mktChn.innerHTML = '';
+            (data.marketing?.channels || []).forEach(ch => {
+                const badge = document.createElement('span');
+                badge.className = "px-2.5 py-1 bg-slate-900 border border-slate-800 rounded text-[11px] text-slate-300 font-medium";
+                badge.innerText = ch;
+                mktChn.appendChild(badge);
+            });
+
+            document.getElementById('mkt-positioning').innerText = data.marketing?.strategy || "Posicionamento estratégico não formulado.";
+            document.getElementById('mkt-launch-plan').innerText = data.marketing?.launchPlan || "Plano de lançamento geral não formulado.";
+
+            // Tab 7: Grounded Sources List
+            const srcCountElement = document.getElementById('source-count');
+            const srcListContainer = document.getElementById('sources-list-container');
+            srcListContainer.innerHTML = '';
+
+            if (sources && sources.length > 0) {
+                // Deduplicate sources
+                const uniqueSources = [];
+                const visitedUris = new Set();
+                sources.forEach(s => {
+                    if (!visitedUris.has(s.uri)) {
+                        visitedUris.add(s.uri);
+                        uniqueSources.push(s);
+                    }
+                });
+
+                srcCountElement.innerText = uniqueSources.length;
+                uniqueSources.forEach(s => {
+                    const box = document.createElement('a');
+                    box.href = s.uri;
+                    box.target = "_blank";
+                    box.className = "p-4 bg-slate-950/60 hover:bg-slate-950 border border-slate-850 hover:border-emerald-500/30 rounded-xl flex items-center justify-between group transition-all duration-200";
+                    box.innerHTML = `
+                        <div class="flex-grow">
+                            <h4 class="text-xs font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">${s.title}</h4>
+                            <p class="text-[10px] text-slate-500 truncate mt-0.5 max-w-lg">${s.uri}</p>
+                        </div>
+                        <div class="text-slate-500 group-hover:text-emerald-400 flex items-center gap-1.5 text-[10px] font-bold">
+                            <span>Visitar</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </div>
+                    `;
+                    srcListContainer.appendChild(box);
+                });
+            } else {
+                srcCountElement.innerText = "0";
+                srcListContainer.innerHTML = `
+                    <div class="text-center py-6 text-xs text-slate-500 font-medium">
+                        O modelo utilizou a base de conhecimento consolidada sem necessidade de links diretos externos.
+                    </div>
+                `;
+            }
+
+            // Always start on summary tab
+            switchTab('tab-summary');
+        }
+
+        // Render interactive costs table
+        function renderCostsTable() {
+            const sBody = document.getElementById('startup-costs-body');
+            const mBody = document.getElementById('monthly-costs-body');
+
+            sBody.innerHTML = '';
+            mBody.innerHTML = '';
+
+            let sTotal = 0;
+            let mTotal = 0;
+
+            // Startup Cost render
+            activeCosts.oneTime.forEach((c, idx) => {
+                sTotal += Number(c.cost);
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-900/30 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3">
+                        <input type="text" value="${c.item}" onchange="editCost('oneTime', ${idx}, 'item', this.value)" class="bg-transparent border-none text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 rounded px-2 py-0.5 w-full">
+                    </td>
+                    <td class="p-3 text-right">
+                        <input type="number" value="${c.cost}" onchange="editCost('oneTime', ${idx}, 'cost', this.value)" class="bg-transparent border-none text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 rounded px-2 py-0.5 w-24 text-right font-bold"> €
+                    </td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteCost('oneTime', ${idx})" class="text-slate-500 hover:text-rose-400 transition-colors">
+                            <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </td>
+                `;
+                sBody.appendChild(tr);
+            });
+
+            // Monthly Cost render
+            activeCosts.monthly.forEach((c, idx) => {
+                mTotal += Number(c.cost);
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-900/30 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3">
+                        <input type="text" value="${c.item}" onchange="editCost('monthly', ${idx}, 'item', this.value)" class="bg-transparent border-none text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 rounded px-2 py-0.5 w-full">
+                    </td>
+                    <td class="p-3 text-right">
+                        <input type="number" value="${c.cost}" onchange="editCost('monthly', ${idx}, 'cost', this.value)" class="bg-transparent border-none text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 rounded px-2 py-0.5 w-24 text-right font-bold"> €
+                    </td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteCost('monthly', ${idx})" class="text-slate-500 hover:text-rose-400 transition-colors">
+                            <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </td>
+                `;
+                mBody.appendChild(tr);
+            });
+
+            document.getElementById('live-total').innerText = sTotal.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
+            document.getElementById('live-monthly-total').innerText = mTotal.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
+        }
+
+        function editCost(type, idx, key, val) {
+            if (key === 'cost') {
+                activeCosts[type][idx][key] = Number(val) || 0;
+            } else {
+                activeCosts[type][idx][key] = val;
+            }
+            renderCostsTable();
+        }
+
+        function addNewCostRow(type) {
+            const arr = type === 'startup' ? activeCosts.oneTime : activeCosts.monthly;
+            arr.push({ item: "Novo Recurso", cost: 250 });
+            renderCostsTable();
+            showToast("Item Adicionado", "Insira o nome do recurso e edite o custo desejado.", false);
+        }
+
+        function deleteCost(type, idx) {
+            const arr = type === 'startup' ? activeCosts.oneTime : activeCosts.monthly;
+            arr.splice(idx, 1);
+            renderCostsTable();
+            showToast("Item Eliminado", "O orçamento foi recalculado instantaneamente.", false);
+        }
+
+        // Regulation Checklist
+        function renderChecklist() {
+            const container = document.getElementById('license-checklist-container');
+            container.innerHTML = '';
+
+            checkListData.forEach((lic, idx) => {
+                const item = document.createElement('div');
+                item.className = `p-4 border rounded-xl flex items-start gap-4 cursor-pointer transition-all duration-250 ${
+                    lic.checked 
+                        ? 'bg-emerald-950/15 border-emerald-500/20 shadow-md shadow-emerald-500/5' 
+                        : 'bg-slate-950/40 border-slate-850 hover:border-slate-800'
+                }`;
+                item.setAttribute('onclick', `toggleLicense(${idx})`);
+                item.innerHTML = `
+                    <div class="mt-0.5 flex items-center justify-center w-5 h-5 rounded border ${
+                        lic.checked 
+                            ? 'bg-emerald-500 border-emerald-500 text-white' 
+                            : 'border-slate-700 bg-slate-900 text-transparent'
+                    }">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                            <h4 class="text-xs font-bold ${lic.checked ? 'text-slate-500 line-through' : 'text-slate-200'}">${lic.name}</h4>
+                            <span class="text-[9px] font-bold text-slate-500 px-2 py-0.5 bg-slate-900 border border-slate-800 rounded">
+                                ${lic.authority}
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1.5 leading-relaxed">${lic.description}</p>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+
+            updateLicenseProgress();
+        }
+
+        function toggleLicense(idx) {
+            checkListData[idx].checked = !checkListData[idx].checked;
+            renderChecklist();
+        }
+
+        function updateLicenseProgress() {
+            const total = checkListData.length;
+            if (total === 0) return;
+            const checked = checkListData.filter(l => l.checked).length;
+            const pct = Math.round((checked / total) * 100);
+
+            document.getElementById('license-percentage').innerText = `${pct}%`;
+            document.getElementById('license-progress-bar').style.width = `${pct}%`;
+        }
+
+        // Tab routing switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(p => {
+                p.classList.add('hidden');
+                p.classList.remove('block');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn w-full px-4 py-3.5 bg-transparent hover:bg-slate-900 border-l-2 border-transparent hover:border-slate-700 text-slate-400 hover:text-slate-200 rounded-r-lg text-left text-xs font-bold flex items-center gap-3 transition-all flex-shrink-0";
+            });
+
+            const panel = document.getElementById(`${tabId}-content`);
+            if (panel) {
+                panel.classList.remove('hidden');
+                panel.classList.add('block');
+            }
+
+            const btn = document.getElementById(`btn-${tabId}`);
+            if (btn) {
+                btn.className = "tab-btn w-full px-4 py-3.5 bg-indigo-600/10 border-l-2 border-indigo-500 text-indigo-300 rounded-r-lg text-left text-xs font-bold flex items-center gap-3 transition-all flex-shrink-0";
+            }
+        }
+
+        // Copy plain strategy text
+        function copyToClipboard() {
+            if (!lastGroundedResponse) return;
+            
+            let text = `BEYOND SEARCH - ESTRATÉGIA COGNITIVA REAL-TIME\n\n`;
+            text += `PROCURA: ${activeQuery.toUpperCase()}\n\n`;
+            text += `==============================================\n\n`;
+            text += `1. SUMÁRIO DE OPERAÇÃO:\n${lastGroundedResponse.executiveSummary}\n\n`;
+            text += `2. MODELO DE NEGÓCIO:\n`;
+            text += `- Proposta de Valor: ${lastGroundedResponse.businessPlan?.valueProposition}\n`;
+            text += `- Segmento de Clientes: ${lastGroundedResponse.businessPlan?.targetAudience}\n`;
+            text += `- Diferenciais: ${(lastGroundedResponse.businessPlan?.keyDifferentiators || []).join(', ')}\n\n`;
+            
+            textReport = text;
+
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = textReport;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+
+            showToast("Copiado com Sucesso!", "O plano de negócios e estratégia foram guardados na área de transferência.", false);
+        }
+
+        function backToSearch() {
+            resultsDashboard.classList.remove('opacity-100', 'translate-y-0');
+            resultsDashboard.classList.add('translate-y-4');
+            
+            setTimeout(() => {
+                resultsDashboard.classList.add('hidden');
+                searchLanding.classList.remove('hidden');
+            }, 300);
+        }
+    </script>
 </body>
 </html>
